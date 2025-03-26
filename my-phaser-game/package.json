@@ -1,0 +1,23 @@
+{
+  "name": "2d-game",
+  "version": "1.0.0",
+  "description": "A Phaser.js 2D game using Electron and Vite.",
+  "main": "electron.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "electron": "npm run dev & electron electron.js"
+  },
+  "dependencies": {
+    "phaser": "^3.70.0"
+  },
+  "devDependencies": {
+    "electron": "^25.0.0",
+    "electron-is-dev": "^3.0.1",
+    "typescript": "^5.4.0",
+    "vite": "^5.0.0"
+  },
+  "author": "Your Name",
+  "license": "MIT"
+}
