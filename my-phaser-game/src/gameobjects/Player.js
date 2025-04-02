@@ -39,11 +39,13 @@ export class Player extends Physics.Arcade.Image {
 
         this.iddleTween = true;
 
-        // Create particles
         
     }
 
+    
     start() {
+
+        //set player to start state
         this.state = "start";
 
         // Stops bouncing 
@@ -52,33 +54,44 @@ export class Player extends Physics.Arcade.Image {
             this.idleTween = null;
         }
 
+        // Enable player movement
         this.body.enable = true;
         this.setVelocityY(-200);
         this.state = "can_move";
     }
 
     update() {
+
+        // Check if player can move, if so they can jump
         if (this.state === "can_move") {
+
             // If the space key is pressed, apply upward velocity
             if (Phaser.Input.Keyboard.JustDown(this.spaceKey)) {
                 this.setVelocityY(-200); 
             }
+
         }
+
+        // Check if player has collided
         if (this.body.blocked.down || this.body.touching.down) {
             this.die();
         }
     }
 
     die() {
+
+        // Set player to die state
         if (this.state === "dead") return; 
 
+        // Set player to die state & red & stop movement
         this.state = "dead";
         this.body.enable = false; 
         this.setTint(0xff0000);
 
-        // Delay the scene transition to allow any effects to play
+        // Delay the scene transition to allow any effects to play, call handlePlayerDeath
         this.scene.time.delayedCall(1000, () => {
-            this.scene.scene.start("GameOverScene", { points: this.scene.points || 0 });
+            this.scene.handlePlayerDeath();
         });
+        
     }
 }

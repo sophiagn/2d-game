@@ -17,13 +17,11 @@ export class MainScene extends Scene {
         super("MainScene");
     }
 
-    init() {
+    init(data) {
         this.cameras.main.fadeIn(1000, 0, 0, 0);
         this.scene.launch("MenuScene");
 
-        // Reset points and timeout
-        this.points = 0;
-        this.game_over_timeout = 20;
+        this.lives = data.lives ?? 5;
     }
 
     create() {
@@ -71,38 +69,45 @@ export class MainScene extends Scene {
         // This event comes from MenuScene
         this.game.events.on("start-game", () => {
             this.scene.stop("MenuScene");
-            this.scene.launch("HudScene", { remaining_time: this.game_over_timeout });
+            this.scene.launch("HudScene", { lives: this.lives });
             this.player.start();
-
-            // Game Over timeout event
-            // this.time.addEvent({
-            //     delay: 1000,
-            //     loop: true,
-            //     callback: () => {
-            //         if (this.game_over_timeout === 0) {
-            //             this.game.events.removeListener("start-game");
-            //             this.scene.stop("HudScene");
-            //             this.scene.start("GameOverScene", { points: this.points });
-            //         } else {
-            //             this.game_over_timeout--;
-            //             this.scene.get("HudScene").update_timeout(this.game_over_timeout);
-            //         }
-            //     }
-            // });
+   
         });
+
+    }
+
+    // Resets the scene if lives > 0
+    resetScene() {
+
+        this.player.clearTint();
+        this.player.setPosition(200, 100);
+        this.player.setVelocity(0, 0);
+        this.player.body.enable = true;
+        this.player.state = "can_move";
+
     }
 
     handlePlayerDeath(){
+
         this.lives--;
 
+        // Update life counter
+        const hud = this.scene.get("HudScene");
+        if (hud && hud.update_lives) {
+            hud.update_lives(this.lives);
+        }
+
+        // Handles life logic
         if(this.lives > 0){
 
-            this.scene.launch("HudScene");
+            // Calls to reset scene, delays to allow user to have time to restart
+            this.time.delayedCall(1000, () => {this.resetScene();});
 
         } else {
 
+            //Game is over
             this.scene.stop("HudScene");
-            this.scene.launch("GameOverScene");
+            this.scene.start("GameOverScene");
 
         }
     }
@@ -132,13 +137,5 @@ export class MainScene extends Scene {
 
         this.player.update();
 
-        // // Player movement entries
-        // // Freezes screen when clicking up or down when uncommented!
-        // if (this.cursors.up.isDown) {
-        //     this.player.move("up");
-        // }
-        // if (this.cursors.down.isDown) {
-        //     this.player.move("down");
-        // }
     }
 }
