@@ -1,7 +1,5 @@
 import { Scene } from "phaser";
 import { Player } from "../gameobjects/Player";
-import { BlueEnemy } from "../gameobjects/BlueEnemy";
-import { Pipe } from "../gameobjects/Pipe";
 import { PipeManager } from "../gameobjects/PipeManager";
 
 export class MainScene extends Scene {
