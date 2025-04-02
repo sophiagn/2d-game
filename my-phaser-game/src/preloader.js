@@ -36,6 +36,9 @@ export class Preloader extends Phaser.Scene {
         this.load.on("progress", (progress) => {
             console.log("Loading: " + Math.round(progress * 100) + "%");
         });
+
+        // Bubble
+        this.load.image("bubble", "player/propulsion/bubbles.png");
     }
 
     create() {
