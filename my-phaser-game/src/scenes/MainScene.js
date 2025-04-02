@@ -1,15 +1,21 @@
 import { Scene } from "phaser";
 import { Player } from "../gameobjects/Player";
-// Removed BlueEnemy import
-// import { BlueEnemy } from "../gameobjects/BlueEnemy";
+import { BlueEnemy } from "../gameobjects/BlueEnemy";
+import { Pipe } from "../gameobjects/Pipe";
+import { PipeManager } from "../gameobjects/PipeManager";
 
 export class MainScene extends Scene {
     player = null;
     enemy_blue = null; // Remains null
     cursors = null;
+    pipe_manager = null;
 
     points = 0;
     game_over_timeout = 20;
+
+    background1 = null;
+    background2 = null;
+    scrollSpeed = 2;
 
     constructor() {
         super("MainScene");
@@ -25,7 +31,12 @@ export class MainScene extends Scene {
     }
 
     create() {
-        this.add.image(0, 0, "background")
+        const { width, height } = this.scale;
+
+        this.background1 = this.add.tileSprite(0, 0, this.scale.width, this.scale.height, 'ocean-background')
+            .setOrigin(0, 0);
+        
+        this.background2 = this.add.tileSprite(this.scale.width, 0, this.scale.width, this.scale.height, 'ocean-background')
             .setOrigin(0, 0);
         this.add.image(0, this.scale.height, "floor")
             .setOrigin(0, 1);
@@ -36,7 +47,10 @@ export class MainScene extends Scene {
         // Do NOT instantiate the blue enemy:
         // this.enemy_blue = new BlueEnemy(this);
 
-        // Set up cursor keys and input events
+        // Pipe Manager
+        this.pipe_manager = new PipeManager(this, 100, 300);
+
+        // Cursor keys 
         this.cursors = this.input.keyboard.createCursorKeys();
         this.cursors.space.on("down", () => {
             this.player.fire();
@@ -77,7 +91,29 @@ export class MainScene extends Scene {
         });
     }
 
+    background_scroll() {
+        // Move both backgrounds
+        this.background1.x -= this.scrollSpeed;
+        this.background2.x -= this.scrollSpeed;
+
+        // When the first background is completely off screen
+        if (this.background1.x <= -this.scale.width) {
+            // Reset it to the right of the second background
+            this.background1.x = this.background2.x + this.scale.width;
+            
+        }
+
+        // When the second background is completely off screen
+        if (this.background2.x <= -this.scale.width) {
+            // Reset it to the right of the first background
+            this.background2.x = this.background1.x + this.scale.width;
+        }
+    }  
+
     update() {
+        this.background_scroll();
+        this.pipe_manager.spawn_pipes();
+
         this.player.update();
 
         // Only update the blue enemy if it exists
