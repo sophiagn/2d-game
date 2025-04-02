@@ -1,17 +1,13 @@
 import { Scene } from "phaser";
 import { Player } from "../gameobjects/Player";
-import { BlueEnemy } from "../gameobjects/BlueEnemy";
-import { Pipe } from "../gameobjects/Pipe";
 import { PipeManager } from "../gameobjects/PipeManager";
 
 export class MainScene extends Scene {
     player = null;
-    enemy_blue = null; // Remains null
     cursors = null;
     pipe_manager = null;
 
-    points = 0;
-    game_over_timeout = 20;
+    points = 5;
 
     background1 = null;
     background2 = null;
@@ -21,16 +17,15 @@ export class MainScene extends Scene {
         super("MainScene");
     }
 
-    init() {
+    init(data) {
         this.cameras.main.fadeIn(1000, 0, 0, 0);
         this.scene.launch("MenuScene");
 
-        // Reset points and timeout
-        this.points = 0;
-        this.game_over_timeout = 20;
+        this.lives = data.lives ?? 5;
     }
 
     create() {
+        
         const { width, height } = this.scale;
 
         this.background1 = this.add.tileSprite(0, 0, this.scale.width, this.scale.height, 'ocean-background')
@@ -38,15 +33,26 @@ export class MainScene extends Scene {
         
         this.background2 = this.add.tileSprite(this.scale.width, 0, this.scale.width, this.scale.height, 'ocean-background')
             .setOrigin(0, 0);
-        this.add.image(0, this.scale.height, "floor")
-            .setOrigin(0, 1);
+
+        // Create the floor image and enable it as a static physics object
+        const floor = this.add.image(0, this.scale.height, "floor").setOrigin(0, 1);
+        this.physics.add.existing(floor, true); // true makes it static
 
         // Create the player
         this.player = new Player({ scene: this });
 
-        // Do NOT instantiate the blue enemy:
-        // this.enemy_blue = new BlueEnemy(this);
-
+        //Collider
+        this.physics.add.collider(this.player, floor-1, (player, floor) => {
+    
+            // Calculate the bottom of the player's body (using its y and half its height)
+            const playerBottom = player.y + player.displayHeight / 2;
+            
+            // The top of the floor is at floor.y because the floor's origin is (0,1)
+            if (playerBottom >= floor.y-5) { // 5-pixel tolerance
+                player.die();
+            }
+        });
+        
         // Pipe Manager
         this.pipe_manager = new PipeManager(this, 100, 300);
 
@@ -55,40 +61,55 @@ export class MainScene extends Scene {
         this.cursors.space.on("down", () => {
             this.player.fire();
         });
+
         this.input.on("pointerdown", (pointer) => {
             this.player.fire(pointer.x, pointer.y);
         });
 
-        // Remove overlap events related to the blue enemy:
-        // this.physics.add.overlap(this.player.bullets, this.enemy_blue, ...);
-        // this.physics.add.overlap(this.enemy_blue.bullets, this.player, ...);
-
         // This event comes from MenuScene
         this.game.events.on("start-game", () => {
             this.scene.stop("MenuScene");
-            this.scene.launch("HudScene", { remaining_time: this.game_over_timeout });
+            this.scene.launch("HudScene", { lives: this.lives });
             this.player.start();
-            // Remove blue enemy start call since it's not used:
-            // if (this.enemy_blue) {
-            //     this.enemy_blue.start();
-            // }
-
-            // Game Over timeout event
-            this.time.addEvent({
-                delay: 1000,
-                loop: true,
-                callback: () => {
-                    if (this.game_over_timeout === 0) {
-                        this.game.events.removeListener("start-game");
-                        this.scene.stop("HudScene");
-                        this.scene.start("GameOverScene", { points: this.points });
-                    } else {
-                        this.game_over_timeout--;
-                        this.scene.get("HudScene").update_timeout(this.game_over_timeout);
-                    }
-                }
-            });
+   
         });
+
+    }
+
+    // Resets the scene if lives > 0
+    resetScene() {
+
+        this.player.clearTint();
+        this.player.setPosition(200, 100);
+        this.player.setVelocity(0, 0);
+        this.player.body.enable = true;
+        this.player.state = "can_move";
+
+    }
+
+    handlePlayerDeath(){
+
+        this.lives--;
+
+        // Update life counter
+        const hud = this.scene.get("HudScene");
+        if (hud && hud.update_lives) {
+            hud.update_lives(this.lives);
+        }
+
+        // Handles life logic
+        if(this.lives > 0){
+
+            // Calls to reset scene, delays to allow user to have time to restart
+            this.time.delayedCall(1000, () => {this.resetScene();});
+
+        } else {
+
+            //Game is over
+            this.scene.stop("HudScene");
+            this.scene.start("GameOverScene");
+
+        }
     }
 
     background_scroll() {
@@ -116,17 +137,5 @@ export class MainScene extends Scene {
 
         this.player.update();
 
-        // Only update the blue enemy if it exists
-        if (this.enemy_blue) {
-            this.enemy_blue.update();
-        }
-
-        // Player movement entries
-        if (this.cursors.up.isDown) {
-            this.player.move("up");
-        }
-        if (this.cursors.down.isDown) {
-            this.player.move("down");
-        }
     }
 }
