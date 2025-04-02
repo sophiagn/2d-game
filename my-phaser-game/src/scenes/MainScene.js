@@ -6,7 +6,7 @@ import { PipeManager } from "../gameobjects/PipeManager";
 
 export class MainScene extends Scene {
     player = null;
-    enemy_blue = null;
+    enemy_blue = null; // Remains null
     cursors = null;
     pipe_manager = null;
 
@@ -25,7 +25,7 @@ export class MainScene extends Scene {
         this.cameras.main.fadeIn(1000, 0, 0, 0);
         this.scene.launch("MenuScene");
 
-        // Reset points
+        // Reset points and timeout
         this.points = 0;
         this.game_over_timeout = 20;
     }
@@ -38,13 +38,14 @@ export class MainScene extends Scene {
         
         this.background2 = this.add.tileSprite(this.scale.width, 0, this.scale.width, this.scale.height, 'ocean-background')
             .setOrigin(0, 0);
-        this.add.image(0, this.scale.height, "floor").setOrigin(0, 1);
+        this.add.image(0, this.scale.height, "floor")
+            .setOrigin(0, 1);
 
-        // Player
+        // Create the player
         this.player = new Player({ scene: this });
 
-        // Enemy
-        this.enemy_blue = new BlueEnemy(this);
+        // Do NOT instantiate the blue enemy:
+        // this.enemy_blue = new BlueEnemy(this);
 
         // Pipe Manager
         this.pipe_manager = new PipeManager(this, 100, 300);
@@ -58,42 +59,27 @@ export class MainScene extends Scene {
             this.player.fire(pointer.x, pointer.y);
         });
 
-        // Overlap enemy with bullets
-        this.physics.add.overlap(this.player.bullets, this.enemy_blue, (enemy, bullet) => {
-            bullet.destroyBullet();
-            this.enemy_blue.damage(this.player.x, this.player.y);
-            this.points += 10;
-            this.scene.get("HudScene")
-                .update_points(this.points);
-        });
-
-        // Overlap player with enemy bullets
-        this.physics.add.overlap(this.enemy_blue.bullets, this.player, (player, bullet) => {
-            bullet.destroyBullet();
-            this.cameras.main.shake(100, 0.01);
-            // Flash the color white for 300ms
-            this.cameras.main.flash(300, 255, 10, 10, false,);
-            this.points -= 10;
-            this.scene.get("HudScene")
-                .update_points(this.points);
-        });
+        // Remove overlap events related to the blue enemy:
+        // this.physics.add.overlap(this.player.bullets, this.enemy_blue, ...);
+        // this.physics.add.overlap(this.enemy_blue.bullets, this.player, ...);
 
         // This event comes from MenuScene
         this.game.events.on("start-game", () => {
             this.scene.stop("MenuScene");
             this.scene.launch("HudScene", { remaining_time: this.game_over_timeout });
             this.player.start();
-            this.enemy_blue.start();
+            // Remove blue enemy start call since it's not used:
+            // if (this.enemy_blue) {
+            //     this.enemy_blue.start();
+            // }
 
-            // Game Over timeout
+            // Game Over timeout event
             this.time.addEvent({
                 delay: 1000,
                 loop: true,
                 callback: () => {
                     if (this.game_over_timeout === 0) {
-                        // You need remove the event listener to avoid duplicate events.
                         this.game.events.removeListener("start-game");
-                        // It is necessary to stop the scenes launched in parallel.
                         this.scene.stop("HudScene");
                         this.scene.start("GameOverScene", { points: this.points });
                     } else {
@@ -129,7 +115,11 @@ export class MainScene extends Scene {
         this.pipe_manager.spawn_pipes();
 
         this.player.update();
-        this.enemy_blue.update();
+
+        // Only update the blue enemy if it exists
+        if (this.enemy_blue) {
+            this.enemy_blue.update();
+        }
 
         // Player movement entries
         if (this.cursors.up.isDown) {
@@ -138,6 +128,5 @@ export class MainScene extends Scene {
         if (this.cursors.down.isDown) {
             this.player.move("down");
         }
-
     }
 }
