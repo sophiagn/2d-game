@@ -11,7 +11,7 @@ export class Player extends Physics.Arcade.Image {
     lives = 5;
 
     constructor({ scene }) {
-        super(scene, 200, 100, "player");
+        super(scene, 200, 200, "player");
         this.scene = scene;
         this.scene.add.existing(this);
         this.scene.physics.add.existing(this);

@@ -1,37 +1,29 @@
 import { GameObjects } from "phaser";
 
-export class Pipe extends Phaser.Physics.Arcade.Sprite
+export class ScoreZone extends Phaser.Physics.Arcade.Sprite
 {
     scroll_speed = 2;
     scale = 0.4;
 
     constructor(scene, x, y) {
-        super(scene, x, y, "pipe");
-        this.name = "pipe";
-
+        super(scene, x, y, null);
         this.scene.add.existing(this);
         this.scene.physics.add.existing(this);
 
     }
 
-    spawn(x, y, flag) {
+    spawn(x, y, width, height) {
         this.setPosition(x, y);
-        if (flag) {
-            this.flipY = true;
-        }
-        this.setScale(this.scale, this.scale);
-        this.setOrigin(0.5, 0);
-
-        this.body.enable = true; // Enable physics body
-
+        this.setSize(width, height) // Set collider size
+        this.setOrigin(0.5)
+        this.setAlpha(0) // Make it invisible
     }
 
     update (time, delta)
     {
         this.x -= this.scroll_speed * delta / 10;
-        const pipeWidth = 100
 
-        if (this.x < -pipeWidth) {
+        if (this.x < 0) {
             this.setActive(false);
             this.setVisible(false);
             this.destroy();

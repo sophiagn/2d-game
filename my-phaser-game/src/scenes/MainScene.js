@@ -7,11 +7,15 @@ export class MainScene extends Scene {
     cursors = null;
     pipe_manager = null;
 
-    points = 5;
+    score = 0;
 
     background1 = null;
     background2 = null;
+
+    // Scene Values
     scrollSpeed = 2;
+    pipeGap = 200;
+    pipeFrequency = 350;
 
     constructor() {
         super("MainScene");
@@ -25,8 +29,6 @@ export class MainScene extends Scene {
     }
 
     create() {
-        
-        const { width, height } = this.scale;
 
         this.background1 = this.add.tileSprite(0, 0, this.scale.width, this.scale.height, 'ocean-background')
             .setOrigin(0, 0);
@@ -45,8 +47,9 @@ export class MainScene extends Scene {
         this.physics.add.collider(this.player, floor, this.handlePlayerDeath, null, this);
         
         // Pipe Manager
-        this.pipe_manager = new PipeManager(this, 200, 300);
-        this.physics.add.collider(this.player, this.pipe_manager.pipes, this.handlePlayerDeath, null, this);
+        this.pipe_manager = new PipeManager(this, this.pipeGap, this.pipeFrequency);
+        this.physics.add.collider(this.player, this.pipe_manager.pipes, this.handlePlayerDeath, null, this); // pipe collider
+        this.physics.add.overlap(this.player, this.pipe_manager.scoreZones, this.increaseScore, null, this); // score overlap
 
         // Cursor keys 
         this.cursors = this.input.keyboard.createCursorKeys();
@@ -89,18 +92,16 @@ export class MainScene extends Scene {
             }
 
             // Handles life logic
-            if(this.lives > 0){
-
-                // Calls to reset scene, delays to allow user to have time to restart
-                this.time.delayedCall(1000, () => {this.resetScene();});
-
-            } else {
-
-                //Game is over
-                this.scene.stop("HudScene");
-                this.scene.start("GameOverScene");
-
-            }
+            this.time.delayedCall(1000, () => {
+                if(this.lives > 0){
+                    // Calls to reset scene, delays to allow user to have time to restart
+                    this.resetScene();
+                } else {
+                    //Game is over
+                    this.scene.stop("HudScene");
+                    this.scene.start("GameOverScene");
+                }
+            });
         }
     }
 
@@ -124,10 +125,17 @@ export class MainScene extends Scene {
         }
     }  
 
+    increaseScore(player, scoreZone) {
+        this.score += 1; // Increment score
+        console.log("Score:", this.score);
+    
+        // Destroy the score zone to prevent duplicate scoring
+        scoreZone.destroy();
+    }
+
     update(time, delta) {
         this.background_scroll(delta);
-        this.pipe_manager.spawn_pipes();
-
+        this.pipe_manager.update();
         this.player.update();
 
     }
