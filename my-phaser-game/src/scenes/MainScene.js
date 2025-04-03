@@ -53,18 +53,13 @@ export class MainScene extends Scene {
             }
         });
         
+
         // Pipe Manager
-        this.pipe_manager = new PipeManager(this, 100, 300);
+        this.pipe_manager = new PipeManager(this, 200, 300);
+        this.physics.add.collider(this.player, this.pipe_manager.pipes, this.handlePipeCollision, null, this);
 
         // Cursor keys 
         this.cursors = this.input.keyboard.createCursorKeys();
-        this.cursors.space.on("down", () => {
-            this.player.fire();
-        });
-
-        this.input.on("pointerdown", (pointer) => {
-            this.player.fire(pointer.x, pointer.y);
-        });
 
         // This event comes from MenuScene
         this.game.events.on("start-game", () => {
@@ -84,7 +79,9 @@ export class MainScene extends Scene {
         this.player.setVelocity(0, 0);
         this.player.body.enable = true;
         this.player.state = "can_move";
-
+        this.pipe_manager.clearPipes();
+        this.pipe_manager.state = "";
+        this.scrollSpeed = 2;
     }
 
     handlePlayerDeath(){
@@ -109,6 +106,19 @@ export class MainScene extends Scene {
             this.scene.stop("HudScene");
             this.scene.start("GameOverScene");
 
+        }
+    }
+
+    handlePipeCollision(player) {
+        if(player.state != "dead") {
+            console.log("Player hit a pipe!");
+            player.state = "dead"
+            this.scrollSpeed = 0
+            this.pipe_manager.state = "e"
+            this.pipe_manager.pipes.children.iterate((pipe) => {
+                pipe.scroll_speed = 0; // Modify each pipe's scroll speed
+            });
+            this.handlePlayerDeath();
         }
     }
 
