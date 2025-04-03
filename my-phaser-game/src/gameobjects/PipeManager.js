@@ -7,10 +7,11 @@ export class PipeManager extends GameObjects.Group
     state = "";
     pipes = null;
     pipeFrequency = 150; // milliseconds between new pipes
-    pipeGap = 100;
+    pipeGap = 0;
     lastPipeTime = 0;
 
-    constructor(scene, pipeGap = 100, pipeFrequency = 150) {
+    constructor(scene, pipeGap, pipeFrequency = 150) {
+        pipeGap = 250;
         super(scene);
         this.scene = scene;
         this.pipeGap = pipeGap;
