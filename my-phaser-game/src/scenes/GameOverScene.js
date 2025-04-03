@@ -1,14 +1,12 @@
 import { Scene } from "phaser";
 
 export class GameOverScene extends Scene {
-    end_points = 0;
     constructor() {
         super("GameOverScene");
     }
 
     init(data) {
         this.cameras.main.fadeIn(1000, 0, 0, 0);
-        this.end_points = data.points || 0;
     }
 
     create() {
@@ -50,7 +48,7 @@ export class GameOverScene extends Scene {
             this.scale.width / 2,
             this.scale.height / 2 + 85,
             "pixelfont",
-            `YOUR POINTS: ${this.end_points}`,
+            `YOU RAN OUT OF LIVES`,
             24
         ).setOrigin(0.5, 0.5);
 
@@ -67,7 +65,7 @@ export class GameOverScene extends Scene {
             delay: 1000,
             callback: () => {
                 this.input.on("pointerdown", () => {
-                    this.scene.start("MainScene");
+                    this.scene.start("MainScene", { lives: 5 });
                 });
             }
         

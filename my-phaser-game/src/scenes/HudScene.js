@@ -2,11 +2,8 @@ import { Scene } from "phaser";
 
 // The HUD scene is the scene that shows the points and the remaining time.
 export class HudScene extends Scene {
-    
-    remaining_time = 0;
 
-    remaining_time_text;
-    points_text;
+    lives_text;
 
     constructor() {
         super("HudScene");
@@ -14,20 +11,40 @@ export class HudScene extends Scene {
 
     init(data) {
         this.cameras.main.fadeIn(1000, 0, 0, 0);
-        this.remaining_time = data.remaining_time;
+        this.lives = data.lives;
     }
 
     create() {
-        this.points_text = this.add.bitmapText(10, 10, "pixelfont", "POINTS:0000", 24);
-        this.remaining_time_text = this.add.bitmapText(this.scale.width - 10, 10, "pixelfont", `REMAINING:${this.remaining_time}s`, 24)
-            .setOrigin(1, 0);
+        this.lives_text = this.add.bitmapText(10, 10, "pixelfont", `LIVES:${this.lives}`, 24);
     }
 
-    update_points(points) {
-        this.points_text.setText(`POINTS:${points.toString().padStart(4, "0")}`);
+    update_lives(newLives) {
+        this.lives = newLives;
+        this.lives_text.setText(`LIVES:${this.lives}`);
+
+        // Kill exisiting tween to prevent stacking
+        this.tweens.killTweensOf(this.lives_text);
+
+        if (this.lives === 1) {
+
+            // Set it red and start pulsing
+            this.lives_text.setTint(0xff0000); // red
+    
+            // Create a pulsing tween
+            this.tweens.add({
+                targets: this.lives_text,
+                scale: { from: 1, to: 1.5 },
+                duration: 500,
+                yoyo: true,
+                repeat: -1, // loop forever
+                ease: 'Sine.easeInOut'
+            });
+        } else {
+
+            // Reset to normal if lives are more than 1
+            this.lives_text.clearTint();
+            this.lives_text.setScale(1);
+        }
     }
 
-    update_timeout(timeout) {
-        this.remaining_time_text.setText(`REMAINING:${timeout.toString().padStart(2, "0")}s`);
-    }
 }

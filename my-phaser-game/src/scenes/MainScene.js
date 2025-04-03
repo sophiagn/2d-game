@@ -17,13 +17,11 @@ export class MainScene extends Scene {
         super("MainScene");
     }
 
-    init() {
+    init(data) {
         this.cameras.main.fadeIn(1000, 0, 0, 0);
         this.scene.launch("MenuScene");
 
-        // Reset points and timeout
-        this.points = 0;
-        this.game_over_timeout = 20;
+        this.lives = data.lives ?? 5;
     }
 
     create() {
@@ -55,55 +53,77 @@ export class MainScene extends Scene {
             }
         });
         
+
         // Pipe Manager
-        this.pipe_manager = new PipeManager(this, 100, 300);
+        this.pipe_manager = new PipeManager(this, 200, 300);
+        this.physics.add.collider(this.player, this.pipe_manager.pipes, this.handlePipeCollision, null, this);
 
         // Cursor keys 
         this.cursors = this.input.keyboard.createCursorKeys();
-        this.cursors.space.on("down", () => {
-            this.player.fire();
-        });
-
-        this.input.on("pointerdown", (pointer) => {
-            this.player.fire(pointer.x, pointer.y);
-        });
 
         // This event comes from MenuScene
         this.game.events.on("start-game", () => {
             this.scene.stop("MenuScene");
-            this.scene.launch("HudScene", { remaining_time: this.game_over_timeout });
+            this.scene.launch("HudScene", { lives: this.lives });
             this.player.start();
-
-            // Game Over timeout event
-            // this.time.addEvent({
-            //     delay: 1000,
-            //     loop: true,
-            //     callback: () => {
-            //         if (this.game_over_timeout === 0) {
-            //             this.game.events.removeListener("start-game");
-            //             this.scene.stop("HudScene");
-            //             this.scene.start("GameOverScene", { points: this.points });
-            //         } else {
-            //             this.game_over_timeout--;
-            //             this.scene.get("HudScene").update_timeout(this.game_over_timeout);
-            //         }
-            //     }
-            // });
+   
         });
+
+    }
+
+    // Resets the scene if lives > 0
+    resetScene() {
+
+        this.player.clearTint();
+        this.player.setPosition(200, 100);
+        this.player.setVelocity(0, 0);
+        this.player.body.enable = true;
+        this.player.state = "can_move";
+        this.pipe_manager.clearPipes();
+        this.pipe_manager.state = "";
+        this.scrollSpeed = 2;
     }
 
     handlePlayerDeath(){
+
         this.lives--;
 
+        // Update life counter
+        const hud = this.scene.get("HudScene");
+        if (hud && hud.update_lives) {
+            hud.update_lives(this.lives);
+        }
+
+        // Handles life logic
         if(this.lives > 0){
 
-            this.scene.launch("HudScene");
+            // Calls to reset scene, delays to allow user to have time to restart
+            this.time.delayedCall(1000, () => {this.resetScene();});
 
         } else {
 
+            //Game is over
             this.scene.stop("HudScene");
-            this.scene.launch("GameOverScene");
+            this.scene.start("GameOverScene");
 
+        }
+    }
+
+    handlePipeCollision(player) {
+        if(player.state != "dead") {
+            console.log("Player hit a pipe!");
+            // player.state = "dead"
+            this.scrollSpeed = 0
+            this.pipe_manager.pipes.children.iterate((pipe) => {
+                pipe.scroll_speed = 0; // Modify each pipe's scroll speed
+            });
+
+            // Disable physics on player collision to stop pipes from moving
+            this.physics.world.removeCollider(this.pipeCollision);
+
+            // this.player.die();
+
+            this.pipe_manager.state = "e"
         }
     }
 
@@ -132,13 +152,5 @@ export class MainScene extends Scene {
 
         this.player.update();
 
-        // // Player movement entries
-        // // Freezes screen when clicking up or down when uncommented!
-        // if (this.cursors.up.isDown) {
-        //     this.player.move("up");
-        // }
-        // if (this.cursors.down.isDown) {
-        //     this.player.move("down");
-        // }
     }
 }

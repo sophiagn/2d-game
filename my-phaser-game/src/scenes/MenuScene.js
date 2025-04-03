@@ -62,5 +62,10 @@ export class MenuScene extends Scene {
         this.input.on("pointerdown", () => {
             this.game.events.emit("start-game");
         });
+
+        // Send start-game event when user presses spacebar 
+        this.input.keyboard.once("keydown-SPACE", () => {
+            this.game.events.emit("start-game");
+        });
     }
 }
