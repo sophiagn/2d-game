@@ -4,7 +4,7 @@ import { Pipe } from "./Pipe";
 export class PipeManager extends GameObjects.Group
 {
     scene = null;
-    state = "";
+    state = "e";
     pipes = null;
     pipeFrequency = 150; // milliseconds between new pipes
     pipeGap = 0;
@@ -20,7 +20,8 @@ export class PipeManager extends GameObjects.Group
 
         this.pipes = this.scene.physics.add.group({
             classType: Pipe,
-            runChildUpdate: true
+            runChildUpdate: true,
+            immovable: true
         });
     }
 
@@ -51,6 +52,17 @@ export class PipeManager extends GameObjects.Group
             this.lastPipeTime++;
             
         }
+    }
+
+    start() {
+        this.state = ""
+    }
+
+    stopPipes() {
+        this.pipes.children.iterate((pipe) => {
+            pipe.scroll_speed = 0; // Modify each pipe's scroll speed
+        });
+        this.state = "e"
     }
 
     clearPipes() {

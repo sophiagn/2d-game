@@ -36,9 +36,6 @@ export class Player extends Physics.Arcade.Image {
             repeat: -1,
             ease: 'Sine.easeInOut'
         });
-
-        this.iddleTween = true;
-
         
     }
 
@@ -49,14 +46,11 @@ export class Player extends Physics.Arcade.Image {
         this.state = "start";
 
         // Stops bouncing 
-        if (this.iddleTween) {
-            this.idleTween.stop();
-            this.idleTween = null;
-        }
+        this.idleTween.stop();
 
         // Enable player movement
         this.body.enable = true;
-        this.setVelocityY(-200);
+        this.setVelocityY(0);
         this.state = "can_move";
     }
 
@@ -71,26 +65,7 @@ export class Player extends Physics.Arcade.Image {
             }
 
         }
-
-        // Check if player has collided
-        if (this.body.blocked.down || this.body.touching.down) {
-            this.die();
-        }
     }
-
-    // handlePipeCollision(player) {
-    //     if(player.state != "dead") {
-    //         console.log("Player hit a pipe!");
-    //         // player.state = "dead"
-    //         this.scrollSpeed = 0
-    //         this.pipe_manager.state = "e"
-    //         this.pipe_manager.pipes.children.iterate((pipe) => {
-    //             pipe.scroll_speed = 0; // Modify each pipe's scroll speed
-    //         });
-            
-    //         this.die();
-    //     }
-    // }
 
     die() {
 
@@ -99,13 +74,8 @@ export class Player extends Physics.Arcade.Image {
 
         // Set player to die state & red & stop movement
         this.state = "dead";
-        this.body.enable = false; 
+        //this.body.enable = false; 
         this.setTint(0xff0000);
-
-        // Delay the scene transition to allow any effects to play, call handlePlayerDeath
-        this.scene.time.delayedCall(1000, () => {
-            this.scene.handlePlayerDeath();
-        });
         
     }
 }

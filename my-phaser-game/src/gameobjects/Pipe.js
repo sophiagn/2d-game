@@ -12,11 +12,6 @@ export class Pipe extends Phaser.Physics.Arcade.Sprite
         this.scene.add.existing(this);
         this.scene.physics.add.existing(this);
 
-        this.setImmovable(true); // Pipes should not move when hit
-
-        // Update the collider size to match the new scale
-        //this.body.setSize(this.width * this.scale, this.height * this.scale);
-        //this.body.setOffset((this.width - this.body.width) / 2, (this.height - this.body.height) / 2); 
     }
 
     spawn(x, y, flag) {
@@ -29,9 +24,9 @@ export class Pipe extends Phaser.Physics.Arcade.Sprite
 
     }
 
-    update ()
+    update (time, delta)
     {
-        this.x -= this.scroll_speed;
+        this.x -= this.scroll_speed * delta / 10;
         const pipeWidth = 100
 
         if (this.x < -pipeWidth) {
