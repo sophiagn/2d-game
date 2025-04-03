@@ -78,6 +78,20 @@ export class Player extends Physics.Arcade.Image {
         }
     }
 
+    // handlePipeCollision(player) {
+    //     if(player.state != "dead") {
+    //         console.log("Player hit a pipe!");
+    //         // player.state = "dead"
+    //         this.scrollSpeed = 0
+    //         this.pipe_manager.state = "e"
+    //         this.pipe_manager.pipes.children.iterate((pipe) => {
+    //             pipe.scroll_speed = 0; // Modify each pipe's scroll speed
+    //         });
+            
+    //         this.die();
+    //     }
+    // }
+
     die() {
 
         // Set player to die state

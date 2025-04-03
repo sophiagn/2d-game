@@ -112,13 +112,18 @@ export class MainScene extends Scene {
     handlePipeCollision(player) {
         if(player.state != "dead") {
             console.log("Player hit a pipe!");
-            player.state = "dead"
+            // player.state = "dead"
             this.scrollSpeed = 0
-            this.pipe_manager.state = "e"
             this.pipe_manager.pipes.children.iterate((pipe) => {
                 pipe.scroll_speed = 0; // Modify each pipe's scroll speed
             });
-            this.handlePlayerDeath();
+
+            // Disable physics on player collision to stop pipes from moving
+            this.physics.world.removeCollider(this.pipeCollision);
+
+            // this.player.die();
+
+            this.pipe_manager.state = "e"
         }
     }
 
