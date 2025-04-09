@@ -25,7 +25,9 @@ export class Pipe extends Phaser.Physics.Arcade.Sprite
 
     spawn(x, y, flag) {
         this.setPosition(x, y);
-        if (flag) this.flipY = true;
+        if (flag) {
+            this.flipY = true;
+        }
         this.setScale(this.scale, this.scale);
         this.setOrigin(0.5, 0);
 
@@ -34,9 +36,9 @@ export class Pipe extends Phaser.Physics.Arcade.Sprite
     }
     
 
-    update ()
+    update (time, delta)
     {
-        this.x -= this.scroll_speed;
+        this.x -= this.scroll_speed * delta / 10;
         const pipeWidth = 100
 
         if (this.x < -pipeWidth) {
