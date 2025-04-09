@@ -81,7 +81,7 @@ export class MainScene extends Scene {
         this.player.state = "can_move";
         this.pipe_manager.clearPipes();
         this.pipe_manager.state = "";
-        this.scrollSpeed = 2;
+        this.scrollSpeed = 3;
     }
 
     handlePlayerDeath(){
