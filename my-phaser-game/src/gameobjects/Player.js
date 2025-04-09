@@ -1,7 +1,7 @@
 import { GameObjects, Physics } from "phaser";
 import { Scene } from "phaser";
 
-export class Player extends Physics.Arcade.Image {
+export class Player extends Physics.Arcade.Sprite {
     
     // Player states: waiting, start, can_move
     state = "waiting";
@@ -15,6 +15,12 @@ export class Player extends Physics.Arcade.Image {
         this.scene = scene;
         this.scene.add.existing(this);
         this.scene.physics.add.existing(this);
+
+        if (this.scene.anims.exists("fish-swim")) {
+            this.play("fish-swim");
+        } else {
+            console.warn(":(((");
+        }
 
         // Enable gravity on the player and allow collision with stuff
         this.body.setGravityY(400);
@@ -101,6 +107,11 @@ export class Player extends Physics.Arcade.Image {
         this.state = "dead";
         this.body.enable = false; 
         this.setTint(0xff0000);
+
+        //Stop fish anims
+        this.anims.stop();
+        this.setTexture("playerDead"); 
+        this.setScale(1.3);
 
         // Delay the scene transition to allow any effects to play, call handlePlayerDeath
         this.scene.time.delayedCall(1000, () => {
