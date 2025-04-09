@@ -11,7 +11,7 @@ export class MainScene extends Scene {
 
     background1 = null;
     background2 = null;
-    scrollSpeed = 2;
+    scrollSpeed = 4;
 
     constructor() {
         super("MainScene");
