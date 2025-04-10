@@ -14,9 +14,9 @@ export class Pipe extends Phaser.Physics.Arcade.Sprite
 
         this.setImmovable(true); // Pipes should not move when hit
         
-        // if (this.name === "seaweed") {
-        //     this.anims.play("seaweed-waving");
-        // }
+        if (this.name === "seaweed") {
+            this.anims.play("seaweed-waving");
+        }
 
         // Update the collider size to match the new scale
         //this.body.setSize(this.width * this.scale, this.height * this.scale);

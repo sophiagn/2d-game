@@ -8,12 +8,13 @@ export class PipeManager extends GameObjects.Group
     state = "e";
     pipes = null;
     scoreZones = null;
-    pipeFrequency = 150; // milliseconds between new pipes
+    pipeFrequency = 0; // milliseconds between new pipes
     pipeGap = 0;
     lastPipeTime = 0;
 
-    constructor(scene, pipeGap, pipeFrequency = 150) {
+    constructor(scene, pipeGap, pipeFrequency) {
         pipeGap = 250;
+        pipeFrequency = 200
         super(scene);
         this.scene = scene;
         this.pipeGap = pipeGap;
@@ -43,7 +44,7 @@ export class PipeManager extends GameObjects.Group
 
                 // Randomizer
                 const rand = Math.floor(Math.random() * (150 - (-50) + 1)) + (-50);
-                //const coin = Math.random() < 0.5;
+                // const coin = Math.random() < 0.5;
                 
                 // Top pipe (flipped)
                 const topPipe = this.pipes.get();
@@ -53,22 +54,22 @@ export class PipeManager extends GameObjects.Group
                     //     topPipe.name = "seaweed";
                     //     topPipe.anims.play("seaweed-waving");
                     //     topPipe.spawn(pipeX, minPipeY + rand, true);
-                    // } else {
-                        topPipe.spawn(pipeX, minPipeY + rand, false);
-                    // }
+                        // } else {
+                            topPipe.spawn(pipeX, minPipeY + rand, false);
+                        // }
                     
                 }
 
                     const bottomPipe = this.pipes.get();
                     if (bottomPipe) {
-                    //     if (coin) {
-                    //     bottomPipe.setTexture("seaweed");
-                    //     bottomPipe.name = "seaweed";
-                    //     bottomPipe.anims.play("seaweed-waving");
-                    //     bottomPipe.spawn(pipeX, this.pipeGap + minPipeY + pipeHeight + rand, false); 
-                    // } else {
-                        bottomPipe.spawn(pipeX, this.pipeGap + minPipeY + pipeHeight + rand, true); 
-                    // }
+                        // if (coin) {
+                        //     bottomPipe.setTexture("seaweed");
+                        //     bottomPipe.name = "seaweed";
+                        //     bottomPipe.anims.play("seaweed-waving");
+                        //     bottomPipe.spawn(pipeX, this.pipeGap + minPipeY + pipeHeight + rand, false); 
+                        // } else {
+                            bottomPipe.spawn(pipeX, this.pipeGap + minPipeY + pipeHeight + rand, true); 
+                        // }
                     
                     }
 
