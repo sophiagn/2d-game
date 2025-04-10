@@ -19,13 +19,19 @@ export class MainScene extends Scene {
 
     constructor() {
         super("MainScene");
+        this.currentLevel = 1;
     }
 
     init(data) {
         this.cameras.main.fadeIn(1000, 0, 0, 0);
         this.scene.launch("MenuScene");
 
-        this.lives = data.lives ?? 5;
+        this.lives = 3;
+
+        this.score = 0;
+
+        // saves the current level, if no level is provided, it defaults to 1
+        this.currentLevel = data.currentLevel ?? 1;
     }
 
     create() {
@@ -68,14 +74,24 @@ export class MainScene extends Scene {
     // Resets the scene if lives > 0
     resetScene() {
 
+        //restores scroll speed 
+        this.setLevelParameters();
+
+
         this.player.clearTint();
         this.player.setPosition(200, 100);
         this.player.setVelocity(0, 0);
         this.player.body.enable = true;
         this.player.state = "can_move";
         this.pipe_manager.clearPipes();
+
+        this.pipe_manager.gap = this.pipeGap;
+        this.pipe_manager.frequency = this.pipeFrequency;
+        // this.scrollSpeed = this.scrollSpeed ?? 2;
         this.pipe_manager.start();
-        this.scrollSpeed = 2;
+        // this.scrollSpeed = 2;
+        this.player.start();
+        console.log("Resetting scene at Level", this.currentLevel, "with scrollSpeed:", this.scrollSpeed);
     }
 
     handlePlayerDeath(){
@@ -83,6 +99,7 @@ export class MainScene extends Scene {
             this.player.die();
             this.pipe_manager.stopPipes();
             this.scrollSpeed = 0;
+            this.score = 0;
             this.lives--;
 
             // Update life counter
@@ -131,7 +148,79 @@ export class MainScene extends Scene {
     
         // Destroy the score zone to prevent duplicate scoring
         scoreZone.destroy();
+
+        if(this.score == 2){
+            this.levelUp();
+            this.lives = 3;
+
+            //update life counter
+            const hud = this.scene.get("Hudscene");
+            if(hud && hud.update_lives) {
+                hud.update_lives(this.lives);
+            }
+        }
     }
+
+    setLevelParameters() {
+
+        if(this.currentLevel === 1) {
+            this.scrollSpeed = 2;
+            this.pipeGap = 200;
+            this.pipeFrequency = 350;
+        } else if(this.currentLevel === 2){
+            this.scrollSpeed = 2.5;
+            this.pipeGap = 180;
+            this.pipeFrequency = 400;
+        } else if(this.currentLevel === 3){
+            this.scrollSpeed = 3;
+            this.pipeGap = 160;
+            this.pipeFrequency = 450;
+        } else if(this.currentLevel === 4){
+            this.scrollSpeed = 3.5;
+            this.pipeGap = 140;
+            this.pipeFrequency = 500;
+        } else if(this.currentLevel === 5){
+            this.scrollSpeed = 4;
+            this.pipeGap = 120;
+            this.pipeFrequency = 550;
+        } else if(this.currentLevel === 6){
+            this.scrollSpeed = 4.5;
+            this.pipeGap = 100;
+            this.pipeFrequency = 600;
+        }
+    }
+
+    levelUp(){
+
+        this.currentLevel++;
+
+        // call to change parameters based on level
+        this.setLevelParameters();
+        this.lives = 3; 
+
+        // reset score 
+        this.score = 0;
+
+        // update life counter
+        this.time.delayedCall(100, () => {
+            const hud = this.scene.get("HudScene");
+            if (hud && hud.update_lives) {
+                hud.update_lives(this.lives);
+            }
+        });
+
+        // //update score
+        // if (hud && hud.update_score) {
+        //     hud.update_score(this.score);
+        // }
+
+        // message of levelUp
+        this.cameras.main.flash(500, 0, 255, 0);
+        console.log("Level Up! You are in level", this.currentLevel);
+
+        
+    }
+
 
     update(time, delta) {
         this.background_scroll(delta);
