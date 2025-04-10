@@ -46,6 +46,10 @@ export class MainScene extends Scene {
         const floor = this.add.image(0, this.scale.height, "floor").setOrigin(0, 1);
         this.physics.add.existing(floor, true); // true makes it static
 
+        // Modifying collider size of the floor
+        floor.body.setSize(floor.width, 20);
+        floor.body.setOffset(0, floor.height - 20); // Align it to the bottom of the image
+
         // Create the player
         this.player = new Player({ scene: this });
 
@@ -77,7 +81,9 @@ export class MainScene extends Scene {
         //restores scroll speed 
         this.setLevelParameters();
 
-
+        this.player.setTexture("player");
+        this.player.setScale(1);
+        this.player.play("fish-swim");
         this.player.clearTint();
         this.player.setPosition(200, 100);
         this.player.setVelocity(0, 0);
