@@ -86,7 +86,7 @@ export class MainScene extends Scene {
         this.pipe_manager.clearPipes();
 
         this.pipe_manager.gap = this.pipeGap;
-        this.pipe_manager.frequency = this.pipeFrequency;
+        // this.pipe_manager.frequency = this.pipeFrequency;
         // this.scrollSpeed = this.scrollSpeed ?? 2;
         this.pipe_manager.start();
         // this.scrollSpeed = 2;
@@ -167,26 +167,29 @@ export class MainScene extends Scene {
             this.scrollSpeed = 2;
             this.pipeGap = 200;
             this.pipeFrequency = 350;
+            
         } else if(this.currentLevel === 2){
             this.scrollSpeed = 2.5;
             this.pipeGap = 180;
-            this.pipeFrequency = 400;
+            this.pipeFrequency = 290;
+            // this.background.setTint(0x555555);
         } else if(this.currentLevel === 3){
             this.scrollSpeed = 3;
             this.pipeGap = 160;
-            this.pipeFrequency = 450;
+            this.pipeFrequency = 230;
+            // this.background.setTint(0x666666);
         } else if(this.currentLevel === 4){
             this.scrollSpeed = 3.5;
             this.pipeGap = 140;
-            this.pipeFrequency = 500;
+            this.pipeFrequency = 170;
         } else if(this.currentLevel === 5){
             this.scrollSpeed = 4;
             this.pipeGap = 120;
-            this.pipeFrequency = 550;
+            this.pipeFrequency = 110;
         } else if(this.currentLevel === 6){
             this.scrollSpeed = 4.5;
             this.pipeGap = 100;
-            this.pipeFrequency = 600;
+            this.pipeFrequency = 50;
         }
     }
 
@@ -208,11 +211,6 @@ export class MainScene extends Scene {
                 hud.update_lives(this.lives);
             }
         });
-
-        // //update score
-        // if (hud && hud.update_score) {
-        //     hud.update_score(this.score);
-        // }
 
         // message of levelUp
         this.cameras.main.flash(500, 0, 255, 0);
