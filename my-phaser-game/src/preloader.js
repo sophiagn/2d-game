@@ -10,12 +10,17 @@ export class Preloader extends Phaser.Scene {
         this.load.setPath("assets");
         this.load.image("logo", "logo.png");
         this.load.image("floor");
-        this.load.image("background", "background.png");
+        // this.load.image("background", "background.png");
 
         this.load.image("ocean-background", "ocean-background.png");
-        this.load.image("pipe", "coral1.png");
+        this.load.image("pipe", "coral1.png"); 
+        this.load.image("seaweed1", "obstacles/seaweed1.png"); // for seaweed animation
+        this.load.image("seaweed2", "obstacles/seaweed2.png"); // for seaweed animation
+
 
         this.load.image("player", "player/fish1.png");
+        this.load.image("player2", "player/fish2.png");
+        this.load.image("playerDead", "player/fish_dead.png");
         // this.load.atlas("propulsion-fire", "player/propulsion/propulsion-fire.png", "player/propulsion/propulsion-fire_atlas.json");
         // this.load.animation("propulsion-fire-anim", "player/propulsion/propulsion-fire_anim.json");
 
@@ -43,9 +48,31 @@ export class Preloader extends Phaser.Scene {
             charsPerRow: 10,
             spacing: { x: 1, y: 1 }
         };
+
+        
         this.cache.bitmapFont.add('knighthawks', Phaser.GameObjects.RetroFont.Parse(this, config));
 
         // When all the assets are loaded go to the next scene
         this.scene.start("SplashScene");
+
+        this.anims.create({
+            key: "fish-swim",
+            frames: [
+                { key: "player" },
+                { key: "player2" },
+            ],
+            frameRate: 3, 
+            repeat: -1 
+        });
+
+        this.anims.create({
+            key: "seaweed-waving",
+            frames: [
+                { key: "seaweed1" },
+                { key: "seaweed2" },
+            ],
+            frameRate: 3,
+            repeat: -1
+        });
     }
 }

@@ -35,6 +35,7 @@ export class PipeManager extends GameObjects.Group
 
     update(time, delta) {
         if (this.state != "e") {
+            
             if (this.lastPipeTime > this.pipeFrequency) {
                 const pipeX = 1000; // Spawn x position (off-screen to the right)
                 const minPipeY = -200; // Minimum y position for the bottom pipe
@@ -42,17 +43,34 @@ export class PipeManager extends GameObjects.Group
 
                 // Randomizer
                 const rand = Math.floor(Math.random() * (150 - (-50) + 1)) + (-50);
-
+                //const coin = Math.random() < 0.5;
+                
                 // Top pipe (flipped)
                 const topPipe = this.pipes.get();
                 if (topPipe) {
-                    topPipe.spawn(pipeX, minPipeY + rand, false); // Spawn bottom pipe
+                    // if (coin) {
+                    //     topPipe.setTexture("seaweed");
+                    //     topPipe.name = "seaweed";
+                    //     topPipe.anims.play("seaweed-waving");
+                    //     topPipe.spawn(pipeX, minPipeY + rand, true);
+                    // } else {
+                        topPipe.spawn(pipeX, minPipeY + rand, false);
+                    // }
+                    
                 }
 
-                const bottomPipe = this.pipes.get();
-                if (bottomPipe) {
-                    bottomPipe.spawn(pipeX, this.pipeGap + minPipeY + pipeHeight + rand, true); // Spawn top pipe (flipped)
-                }
+                    const bottomPipe = this.pipes.get();
+                    if (bottomPipe) {
+                    //     if (coin) {
+                    //     bottomPipe.setTexture("seaweed");
+                    //     bottomPipe.name = "seaweed";
+                    //     bottomPipe.anims.play("seaweed-waving");
+                    //     bottomPipe.spawn(pipeX, this.pipeGap + minPipeY + pipeHeight + rand, false); 
+                    // } else {
+                        bottomPipe.spawn(pipeX, this.pipeGap + minPipeY + pipeHeight + rand, true); 
+                    // }
+                    
+                    }
 
                 // **ADD SCORE ZONE**
                 const scoreZoneX = pipeX; // Position in the center of the pipes
@@ -67,7 +85,6 @@ export class PipeManager extends GameObjects.Group
 
                 this.lastPipeTime = 0;
             }
-
 
             this.lastPipeTime++;
             
