@@ -13,7 +13,8 @@ export class Preloader extends Phaser.Scene {
         this.load.image("background", "background.png");
 
         this.load.image("ocean-background", "ocean-background.png");
-        this.load.image("pipe", "coral1.png"); 
+        this.load.image("coral1", "obstacles/coral1.png");
+        this.load.image("coral2","obstacles/coral2.png")
         this.load.image("seaweed1", "obstacles/seaweed1.png"); // for seaweed animation
         this.load.image("seaweed2", "obstacles/seaweed2.png"); // for seaweed animation
 
