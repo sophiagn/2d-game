@@ -12,6 +12,9 @@ export class MainScene extends Scene {
     background1 = null;
     background2 = null;
 
+    floor1 = null;
+    floor2 = null;
+
     // Scene Values
     scrollSpeed = 2;
     pipeGap = 200;
@@ -43,14 +46,19 @@ export class MainScene extends Scene {
             .setOrigin(0, 0);
 
         // Create the floor image and enable it as a static physics object
-        const floor = this.add.image(0, this.scale.height, "floor").setOrigin(0, 1);
-        this.physics.add.existing(floor, true); // true makes it static
+        this.floor1 = this.add.image(0, this.scale.height, "floor").setOrigin(0, 1);
+        this.floor2 = this.add.image(this.floor1.width, this.scale.height, "floor").setOrigin(0, 1);
+        this.physics.add.existing(this.floor1, true); // true makes it static
+
+        // Modifying collider size of the floor
+        this.floor1.body.setSize(this.floor1.width, 20);
+        this.floor1.body.setOffset(0, this.floor1.height - 20); // Align it to the bottom of the image
 
         // Create the player
         this.player = new Player({ scene: this });
 
         //Collider
-        this.physics.add.collider(this.player, floor, this.handlePlayerDeath, null, this);
+        this.physics.add.collider(this.player, this.floor1, this.handlePlayerDeath, null, this);
         
         // Pipe Manager
         this.pipe_manager = new PipeManager(this, this.pipeGap, this.pipeFrequency);
@@ -67,6 +75,9 @@ export class MainScene extends Scene {
             this.scrollSpeed = 2;
             this.player.start();
             this.pipe_manager.start();
+            this.pipe_manager.setPipeTexture("coral1");
+            this.background1.clearTint();
+            this.background2.clearTint();
         });
 
     }
@@ -77,7 +88,9 @@ export class MainScene extends Scene {
         //restores scroll speed 
         this.setLevelParameters();
 
-
+        this.player.setTexture("player");
+        this.player.setScale(1);
+        this.player.play("fish-swim");
         this.player.clearTint();
         this.player.setPosition(200, 100);
         this.player.setVelocity(0, 0);
@@ -89,7 +102,7 @@ export class MainScene extends Scene {
         // this.pipe_manager.frequency = this.pipeFrequency;
         // this.scrollSpeed = this.scrollSpeed ?? 2;
         this.pipe_manager.start();
-        // this.scrollSpeed = 2;
+        this.scrollSpeed = 2;
         this.player.start();
         console.log("Resetting scene at Level", this.currentLevel, "with scrollSpeed:", this.scrollSpeed);
     }
@@ -125,20 +138,35 @@ export class MainScene extends Scene {
     background_scroll(delta) {
         // Move both backgrounds
         const speed = this.scrollSpeed * delta / 10;
+        const floorSpeed = Math.max(this.scrollSpeed - 0.4, 0) * delta / 10;
         this.background1.x -= speed;
         this.background2.x -= speed;
+
+        this.floor1.x -= floorSpeed;
+        this.floor2.x -= floorSpeed;
 
         // When the first background is completely off screen
         if (this.background1.x <= -this.scale.width) {
             // Reset it to the right of the second background
             this.background1.x = this.background2.x + this.scale.width;
-            
         }
 
         // When the second background is completely off screen
         if (this.background2.x <= -this.scale.width) {
             // Reset it to the right of the first background
             this.background2.x = this.background1.x + this.scale.width;
+        }
+
+        // When the first background is completely off screen
+        if (this.floor1.x <= -this.floor1.width) {
+            // Reset it to the right of the second background
+            this.floor1.x = this.floor2.x + this.floor1.width;
+        }
+
+        // When the second background is completely off screen
+        if (this.floor2.x <= -this.floor1.width) {
+            // Reset it to the right of the first background
+            this.floor2.x = this.floor1.x + this.floor1.width;
         }
     }  
 
@@ -165,31 +193,23 @@ export class MainScene extends Scene {
 
         if(this.currentLevel === 1) {
             this.scrollSpeed = 2;
-            this.pipeGap = 200;
-            this.pipeFrequency = 350;
-            
+
         } else if(this.currentLevel === 2){
             this.scrollSpeed = 2.5;
-            this.pipeGap = 180;
-            this.pipeFrequency = 290;
-            // this.background.setTint(0x555555);
+
+            this.background1.setTint(0x555555);
+            this.background2.setTint(0x555555);
+            this.pipe_manager.setPipeTexture("coral2");
         } else if(this.currentLevel === 3){
             this.scrollSpeed = 3;
-            this.pipeGap = 160;
-            this.pipeFrequency = 230;
+
             // this.background.setTint(0x666666);
         } else if(this.currentLevel === 4){
             this.scrollSpeed = 3.5;
-            this.pipeGap = 140;
-            this.pipeFrequency = 170;
         } else if(this.currentLevel === 5){
             this.scrollSpeed = 4;
-            this.pipeGap = 120;
-            this.pipeFrequency = 110;
         } else if(this.currentLevel === 6){
             this.scrollSpeed = 4.5;
-            this.pipeGap = 100;
-            this.pipeFrequency = 50;
         }
     }
 

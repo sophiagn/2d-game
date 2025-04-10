@@ -11,6 +11,7 @@ export class PipeManager extends GameObjects.Group
     pipeFrequency = 0; // milliseconds between new pipes
     pipeGap = 0;
     lastPipeTime = 0;
+    pipeTexture = "coral1";
 
     constructor(scene, pipeGap, pipeFrequency) {
         pipeGap = 250;
@@ -38,7 +39,7 @@ export class PipeManager extends GameObjects.Group
         if (this.state != "e") {
             
             if (this.lastPipeTime > this.pipeFrequency) {
-                const pipeX = 1000; // Spawn x position (off-screen to the right)
+                const pipeX = this.scene.sys.canvas.width + 100; // Spawn x position (off-screen to the right)
                 const minPipeY = -200; // Minimum y position for the bottom pipe
                 const pipeHeight = 300;
 
@@ -55,7 +56,7 @@ export class PipeManager extends GameObjects.Group
                     //     topPipe.anims.play("seaweed-waving");
                     //     topPipe.spawn(pipeX, minPipeY + rand, true);
                         // } else {
-                            topPipe.spawn(pipeX, minPipeY + rand, false);
+                            topPipe.spawn(pipeX, minPipeY + rand, true, this.pipeTexture);
                         // }
                     
                 }
@@ -68,7 +69,7 @@ export class PipeManager extends GameObjects.Group
                         //     bottomPipe.anims.play("seaweed-waving");
                         //     bottomPipe.spawn(pipeX, this.pipeGap + minPipeY + pipeHeight + rand, false); 
                         // } else {
-                            bottomPipe.spawn(pipeX, this.pipeGap + minPipeY + pipeHeight + rand, true); 
+                            bottomPipe.spawn(pipeX, this.pipeGap + minPipeY + pipeHeight + rand, false, this.pipeTexture); 
                         // }
                     
                     }
@@ -120,6 +121,10 @@ export class PipeManager extends GameObjects.Group
         }
     
         this.pipes.clear(true, true); // Remove all pipes from the group
+    }
+
+    setPipeTexture(key) {
+        this.pipeTexture = key;
     }
 
 }
