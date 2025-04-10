@@ -45,6 +45,8 @@ export class HudScene extends Scene {
             this.lives_text.clearTint();
             this.lives_text.setScale(1);
         }
+
+        console.log("HUD updated lives to:", newLives);
     }
 
 }
