@@ -16,8 +16,6 @@ export class PipeManager extends GameObjects.Group
     scroll_speed = 2;
 
     constructor(scene, pipeGap, pipeFrequency) {
-        pipeGap = 250;
-        pipeFrequency = 200
         super(scene);
         this.scene = scene;
         this.pipeGap = pipeGap;
