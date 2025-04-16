@@ -39,10 +39,10 @@ export class MainScene extends Scene {
 
     create() {
 
-        this.background1 = this.add.tileSprite(0, 0, this.scale.width, this.scale.height, 'ocean-background')
+        this.background1 = this.add.tileSprite(0, 0, 2695, this.scale.height, 'ocean-background')
             .setOrigin(0, 0);
         
-        this.background2 = this.add.tileSprite(this.scale.width, 0, this.scale.width, this.scale.height, 'ocean-background')
+        this.background2 = this.add.tileSprite(2695, 0, 2695, this.scale.height, 'ocean-background')
             .setOrigin(0, 0);
 
         // Create the floor image and enable it as a static physics object
@@ -146,15 +146,15 @@ export class MainScene extends Scene {
         this.floor2.x -= floorSpeed;
 
         // When the first background is completely off screen
-        if (this.background1.x <= -this.scale.width) {
+        if (this.background1.x <= -2695) {
             // Reset it to the right of the second background
-            this.background1.x = this.background2.x + this.scale.width;
+            this.background1.x = this.background2.x + 2695;
         }
 
         // When the second background is completely off screen
-        if (this.background2.x <= -this.scale.width) {
+        if (this.background2.x <= -2695) {
             // Reset it to the right of the first background
-            this.background2.x = this.background1.x + this.scale.width;
+            this.background2.x = this.background1.x + 2695;
         }
 
         // When the first background is completely off screen
