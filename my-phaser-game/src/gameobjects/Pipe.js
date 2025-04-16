@@ -23,7 +23,7 @@ export class Pipe extends Phaser.Physics.Arcade.Sprite
         //this.body.setOffset((this.width - this.body.width) / 2, (this.height - this.body.height) / 2); 
     }
 
-    spawn(x, y, flag, texture) {
+    spawn(x, y, flag, texture, scroll_speed = 2) {
         this.setPosition(x, y);
         if (flag) {
             this.flipY = true;
@@ -32,7 +32,7 @@ export class Pipe extends Phaser.Physics.Arcade.Sprite
         this.setOrigin(0.5, 0);
         this.setTexture(texture)
         this.body.enable = true; // Enable physics body
-
+        this.scroll_speed = scroll_speed;
     }
     
 

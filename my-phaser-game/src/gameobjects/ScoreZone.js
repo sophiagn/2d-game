@@ -12,11 +12,13 @@ export class ScoreZone extends Phaser.Physics.Arcade.Sprite
 
     }
 
-    spawn(x, y, width, height) {
+    spawn(x, y, width, height, scroll_speed = 2) {
         this.setPosition(x, y);
-        this.setSize(width, height) // Set collider size
-        this.setOrigin(0.5)
-        this.setAlpha(0) // Make it invisible
+        this.setSize(width, height); // Set collider size
+        this.setOrigin(0.5);
+        this.setAlpha(0); // Make it invisible
+
+        this.scroll_speed = scroll_speed;
     }
 
     update (time, delta)

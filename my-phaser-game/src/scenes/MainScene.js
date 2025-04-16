@@ -72,7 +72,7 @@ export class MainScene extends Scene {
         this.game.events.on("start-game", () => {
             this.scene.stop("MenuScene");
             this.scene.launch("HudScene", { lives: this.lives });
-            this.scrollSpeed = 2;
+            this.changeScrollSpeed(2);
             this.player.start();
             this.pipe_manager.start();
             this.pipe_manager.setPipeTexture("coral1");
@@ -80,6 +80,11 @@ export class MainScene extends Scene {
             this.background2.clearTint();
         });
 
+    }
+
+    changeScrollSpeed(speed) {
+        this.pipe_manager.changeScrollSpeed(speed);
+        this.scrollSpeed = speed;
     }
 
     // Resets the scene if lives > 0
@@ -253,19 +258,18 @@ export class MainScene extends Scene {
     setLevelParameters() {
 
         if(this.currentLevel === 1) {
-            this.scrollSpeed = 2;
+            this.changeScrollSpeed(2);
 
         } else if(this.currentLevel === 2){
-            this.scrollSpeed = 2.5;
+            this.changeScrollSpeed(2.5);
 
             this.background1.setTint(0x555555);
             this.background2.setTint(0x555555);
             this.pipe_manager.setPipeTexture("coral2");
 
-            this.showText("Hello I am a fish");
+            // this.showText("Hello I am a fish");
         } else if(this.currentLevel === 3){
-            this.scrollSpeed = 3;
-
+            this.changeScrollSpeed(3);
             // this.background.setTint(0x666666);
         } else if(this.currentLevel === 4){
             this.scrollSpeed = 3.5;

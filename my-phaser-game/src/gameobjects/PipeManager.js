@@ -13,6 +13,8 @@ export class PipeManager extends GameObjects.Group
     lastPipeTime = 0;
     pipeTexture = "coral1";
 
+    scroll_speed = 2;
+
     constructor(scene, pipeGap, pipeFrequency) {
         pipeGap = 250;
         pipeFrequency = 200
@@ -56,7 +58,7 @@ export class PipeManager extends GameObjects.Group
                     //     topPipe.anims.play("seaweed-waving");
                     //     topPipe.spawn(pipeX, minPipeY + rand, true);
                         // } else {
-                            topPipe.spawn(pipeX, minPipeY + rand, true, this.pipeTexture);
+                            topPipe.spawn(pipeX, minPipeY + rand, true, this.pipeTexture, this.scroll_speed);
                         // }
                     
                 }
@@ -69,7 +71,7 @@ export class PipeManager extends GameObjects.Group
                         //     bottomPipe.anims.play("seaweed-waving");
                         //     bottomPipe.spawn(pipeX, this.pipeGap + minPipeY + pipeHeight + rand, false); 
                         // } else {
-                            bottomPipe.spawn(pipeX, this.pipeGap + minPipeY + pipeHeight + rand, false, this.pipeTexture); 
+                            bottomPipe.spawn(pipeX, this.pipeGap + minPipeY + pipeHeight + rand, false, this.pipeTexture, this.scroll_speed); 
                         // }
                     
                     }
@@ -82,7 +84,7 @@ export class PipeManager extends GameObjects.Group
 
                 const scoreZone = this.scoreZones.get();
                 if (scoreZone) {
-                    scoreZone.spawn(scoreZoneX, scoreZoneY, scoreZoneWidth, scoreZoneHeight);
+                    scoreZone.spawn(scoreZoneX, scoreZoneY, scoreZoneWidth, scoreZoneHeight, this.scroll_speed);
                 }
 
                 this.lastPipeTime = 0;
@@ -134,6 +136,16 @@ export class PipeManager extends GameObjects.Group
     changeDifficulty(pipeGap, pipeFrequency) {
         this.pipeGap = pipeGap;
         this.pipeFrequency = pipeFrequency;
+    }
+
+    changeScrollSpeed(speed) {
+        this.scroll_speed = speed;
+        this.pipes.children.iterate((pipe) => {
+            pipe.scroll_speed = speed;
+        });
+        this.scoreZones.children.iterate((zone) => {
+            zone.scroll_speed = speed; 
+        });
     }
 
 }
