@@ -104,7 +104,11 @@ export class PipeManager extends GameObjects.Group
         this.scoreZones.children.iterate((zone) => {
             zone.scroll_speed = 0; 
         });
-        this.state = "e"
+        this.state = "e";
+    }
+
+    stopSpawn() {
+        this.state = "e";
     }
 
     clearPipes() {
@@ -125,6 +129,11 @@ export class PipeManager extends GameObjects.Group
 
     setPipeTexture(key) {
         this.pipeTexture = key;
+    }
+
+    changeDifficulty(pipeGap, pipeFrequency) {
+        this.pipeGap = pipeGap;
+        this.pipeFrequency = pipeFrequency;
     }
 
 }

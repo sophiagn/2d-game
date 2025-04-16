@@ -189,6 +189,67 @@ export class MainScene extends Scene {
         }
     }
 
+    showText(text) {
+        this.pipe_manager.stopSpawn();
+        this.time.delayedCall(3500, () => {
+            let currentText = "";
+            let showCursor = true;
+    
+            const textObject = this.add.text(100, this.scale.height - 100, "", {
+                font: "24px Arial",
+                fill: "#ffffff"
+            });
+
+            // Center the text initially
+            textObject.setOrigin(0.5, 0.5);  // Set origin to the center
+            textObject.x = this.cameras.main.width / 2;  // Center text horizontally
+
+            // Blinking cursor timer
+            this.time.addEvent({
+                delay: 500,
+                loop: true,
+                callback: () => {
+                    showCursor = !showCursor;
+                    textObject.setText(currentText + (showCursor ? "|" : ""));
+                    textObject.x = this.cameras.main.width / 2;
+                }
+            });
+    
+            let charIndex = 0;
+    
+            // Typing timer
+            this.time.addEvent({
+                delay: 100,
+                repeat: text.length - 1,
+                callback: () => {
+                    currentText += text[charIndex];
+                    charIndex++;
+                    textObject.setText(currentText);
+                    textObject.x = this.cameras.main.width / 2;
+                }
+            });
+
+            
+            this.time.addEvent({
+                delay: text.length * 100 + 2000, // After typing and 1 second pause
+                callback: () => {
+                    // Fade out the text
+                    this.tweens.add({
+                        targets: textObject,
+                        alpha: 0, // fade to transparent
+                        duration: 2000, // 1 second fade out
+                        ease: 'Linear',
+                        onComplete: () => {
+                            this.pipe_manager.start();
+                        }
+                    });
+                },
+            });
+
+        })
+
+    }
+
     setLevelParameters() {
 
         if(this.currentLevel === 1) {
@@ -200,6 +261,8 @@ export class MainScene extends Scene {
             this.background1.setTint(0x555555);
             this.background2.setTint(0x555555);
             this.pipe_manager.setPipeTexture("coral2");
+
+            this.showText("Hello I am a fish");
         } else if(this.currentLevel === 3){
             this.scrollSpeed = 3;
 
