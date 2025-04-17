@@ -4,7 +4,9 @@ import { Scene } from "phaser";
 export class HudScene extends Scene {
 
     lives_text;
+
     score_text;
+    lives_image;
 
     constructor() {
         super("HudScene");
@@ -16,14 +18,27 @@ export class HudScene extends Scene {
     }
 
     create() {
-        this.lives_text = this.add.bitmapText(10, 10, "pixelfont", `LIVES:${this.lives}`, 24);
         this.score_text = this.add.bitmapText(this.scale.width - 10, 10, "pixelfont", `SCORE:${0}`, 24);
         this.score_text.setOrigin(1, 0);
+      
+        this.lives_text = this.add.bitmapText(10, 10, "pixelfont", `LIVES:${this.lives}`, 24);
+        this.lives_image = this.add.image(
+            this.lives_text.x + this.lives_text.width / 2 + 5,
+            this.lives_text.y + this.lives_text.height + 10,
+            `${this.lives}hearts` 
+        ).setOrigin(0.5, 0);
+    
+        this.lives_image.setScale(0.4);
+
+        const heartWidth = 72;
+        this.lives_image.setCrop(0, 0, this.lives * heartWidth, this.lives_image.height);
     }
 
     update_lives(newLives) {
         this.lives = newLives;
         this.lives_text.setText(`LIVES:${this.lives}`);
+
+        this.lives_image.setTexture(`${this.lives}hearts`);
 
         // Kill exisiting tween to prevent stacking
         this.tweens.killTweensOf(this.lives_text);

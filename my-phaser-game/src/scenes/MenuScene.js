@@ -28,17 +28,16 @@ export class MenuScene extends Scene {
         ).setAlpha(.8).setOrigin(0, 0.5);
 
         // Logo
-        const logo_game = this.add.bitmapText(
+
+        const logoImage = this.add.image(
             this.scale.width / 2,
             this.scale.height / 2,
-            "knighthawks",
-            "PHASER'S\nREVENGE",
-            52,
-            1
-        )
-        logo_game.setOrigin(0.5, 0.5);
-        logo_game.postFX.addShine();
+            "titleLogo"
+        ).setOrigin(0.5).setScale(0.55);
 
+        logoImage.setOrigin(0.5, 0.5);
+        logoImage.postFX.addShine();
+        
         const start_msg = this.add.bitmapText(
             this.scale.width / 2,
             this.scale.height / 2 + 85,
