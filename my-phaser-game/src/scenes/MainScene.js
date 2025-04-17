@@ -191,9 +191,9 @@ export class MainScene extends Scene {
         // Destroy the score zone to prevent duplicate scoring
         scoreZone.destroy();
 
-        if(this.score == 2){
+        if(this.score == 5){
             this.levelUp();
-            this.lives = 3;
+            //this.lives = 3;
 
             //update life counter
             const hud = this.scene.get("Hudscene");
@@ -264,6 +264,15 @@ export class MainScene extends Scene {
 
     }
 
+    darkenHexColor(hexValue, factor) {
+        const r = Math.floor(((hexValue >> 16) & 0xff) * factor);
+        const g = Math.floor(((hexValue >> 8) & 0xff) * factor);
+        const b = Math.floor((hexValue & 0xff) * factor);
+      
+        return (r << 16) | (g << 8) | b;
+      }
+      
+
     currentTint = 0x888888;
     setLevelParameters() {
 
@@ -276,7 +285,7 @@ export class MainScene extends Scene {
         this.background1.setTint(this.currentTint);
         this.background2.setTint(this.currentTint);
 
-        //this.currentTint *= 0.9;
+        this.currentTint = this.darkenHexColor(this.currentTint, 0.9);
 
 
         // if(this.currentLevel === 1) {
