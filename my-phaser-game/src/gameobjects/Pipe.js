@@ -6,13 +6,14 @@ export class Pipe extends Phaser.Physics.Arcade.Sprite
     scale = 0.4;
 
     constructor(scene, x, y) {
-        super(scene, x, y, "pipe");
-        this.name = "pipe";
+        super(scene, x, y, "coral1");
+        this.name = "coral1";
 
         this.scene.add.existing(this);
         this.scene.physics.add.existing(this);
 
         this.setImmovable(true); // Pipes should not move when hit
+        
         if (this.name === "seaweed") {
             this.anims.play("seaweed-waving");
         }
@@ -22,20 +23,22 @@ export class Pipe extends Phaser.Physics.Arcade.Sprite
         //this.body.setOffset((this.width - this.body.width) / 2, (this.height - this.body.height) / 2); 
     }
 
-    spawn(x, y, flag) {
+    spawn(x, y, flag, texture) {
         this.setPosition(x, y);
-        if (flag) this.flipY = true;
+        if (flag) {
+            this.flipY = true;
+        }
         this.setScale(this.scale, this.scale);
         this.setOrigin(0.5, 0);
-
+        this.setTexture(texture)
         this.body.enable = true; // Enable physics body
 
     }
     
 
-    update ()
+    update (time, delta)
     {
-        this.x -= this.scroll_speed;
+        this.x -= this.scroll_speed * delta / 10;
         const pipeWidth = 100
 
         if (this.x < -pipeWidth) {

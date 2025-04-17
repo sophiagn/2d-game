@@ -8,10 +8,10 @@ export class Player extends Physics.Arcade.Sprite {
     propulsion_fire = null;
     scene = null;
     spaceKey = null;
-    lives = 5;
+    lives = 3;
 
     constructor({ scene }) {
-        super(scene, 200, 100, "player");
+        super(scene, 200, 200, "player");
         this.scene = scene;
         this.scene.add.existing(this);
         this.scene.physics.add.existing(this);
@@ -42,9 +42,6 @@ export class Player extends Physics.Arcade.Sprite {
             repeat: -1,
             ease: 'Sine.easeInOut'
         });
-
-        this.iddleTween = true;
-
         
     }
 
@@ -55,14 +52,11 @@ export class Player extends Physics.Arcade.Sprite {
         this.state = "start";
 
         // Stops bouncing 
-        if (this.iddleTween) {
-            this.idleTween.stop();
-            this.idleTween = null;
-        }
+        this.idleTween.stop();
 
         // Enable player movement
         this.body.enable = true;
-        this.setVelocityY(-200);
+        this.setVelocityY(0);
         this.state = "can_move";
     }
 
@@ -84,26 +78,7 @@ export class Player extends Physics.Arcade.Sprite {
             }
 
         }
-
-        // Check if player has collided
-        if (this.body.blocked.down || this.body.touching.down) {
-            this.die();
-        }
     }
-
-    // handlePipeCollision(player) {
-    //     if(player.state != "dead") {
-    //         console.log("Player hit a pipe!");
-    //         // player.state = "dead"
-    //         this.scrollSpeed = 0
-    //         this.pipe_manager.state = "e"
-    //         this.pipe_manager.pipes.children.iterate((pipe) => {
-    //             pipe.scroll_speed = 0; // Modify each pipe's scroll speed
-    //         });
-            
-    //         this.die();
-    //     }
-    // }
 
     die() {
 
@@ -112,7 +87,7 @@ export class Player extends Physics.Arcade.Sprite {
 
         // Set player to die state & red & stop movement
         this.state = "dead";
-        this.body.enable = false; 
+        //this.body.enable = false; 
         this.setTint(0xff0000);
 
         //Stop fish anims
