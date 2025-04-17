@@ -21,6 +21,7 @@ export class MainScene extends Scene {
     currScrollSpeed = 2;
     pipeGap = 300;
     pipeFrequency = 300;
+    currentTint = 0x888888;
 
     constructor() {
         super("MainScene");
@@ -95,7 +96,11 @@ export class MainScene extends Scene {
             this.scene.stop("MenuScene");
             this.scene.launch("HudScene", { lives: this.lives });
             this.totalScore = 0;
+            this.pipeFrequency = 300;
+            this.pipeGap = 300;
             this.changeScrollSpeed(2);
+            this.currScrollSpeed = 2;
+            this.currentTint = 0x888888;
             this.player.start();
             this.pipe_manager.start();
             this.pipe_manager.setPipeTexture("coral1");
@@ -208,7 +213,7 @@ export class MainScene extends Scene {
         // Destroy the score zone to prevent duplicate scoring
         scoreZone.destroy();
 
-        if(this.score == 5){
+        if(this.score == 2){
             this.levelUp();
             //this.lives = 3;
 
@@ -289,8 +294,6 @@ export class MainScene extends Scene {
         return (r << 16) | (g << 8) | b;
       }
       
-
-    currentTint = 0x888888;
     setLevelParameters() {
 
         this.changeScrollSpeed(this.scrollSpeed + 0.3);
@@ -299,6 +302,18 @@ export class MainScene extends Scene {
         this.pipeGap -= 10;
         this.pipeFrequency -= 10;
         this.pipe_manager.changeDifficulty(this.pipeGap, this.pipeFrequency);
+
+        const random = Math.floor(Math.random() * 3) + 1;
+        if (random == 1) {
+            this.pipe_manager.setPipeTexture("coral1");
+        }
+        else if (random == 2) {
+            this.pipe_manager.setPipeTexture("coral2");
+        }
+        else {
+            this.pipe_manager.setPipeTexture("seaweed");
+
+        }
 
         this.background1.setTint(this.currentTint);
         this.background2.setTint(this.currentTint);

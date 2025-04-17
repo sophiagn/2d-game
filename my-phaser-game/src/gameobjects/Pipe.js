@@ -31,6 +31,9 @@ export class Pipe extends Phaser.Physics.Arcade.Sprite
         this.setScale(this.scale, this.scale);
         this.setOrigin(0.5, 0);
         this.setTexture(texture)
+        if (texture === "seaweed") {
+            this.anims.play("seaweed-waving");
+        }
         this.body.enable = true; // Enable physics body
         this.scroll_speed = scroll_speed;
     }
