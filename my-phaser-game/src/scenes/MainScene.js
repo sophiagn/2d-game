@@ -18,8 +18,10 @@ export class MainScene extends Scene {
 
     // Scene Values
     scrollSpeed = 2;
+    currScrollSpeed = 2;
     pipeGap = 300;
     pipeFrequency = 300;
+    currentTint = 0x888888;
 
     constructor() {
         super("MainScene");
@@ -94,7 +96,11 @@ export class MainScene extends Scene {
             this.scene.stop("MenuScene");
             this.scene.launch("HudScene", { lives: this.lives });
             this.totalScore = 0;
+            this.pipeFrequency = 300;
+            this.pipeGap = 300;
             this.changeScrollSpeed(2);
+            this.currScrollSpeed = 2;
+            this.currentTint = 0x888888;
             this.player.start();
             this.pipe_manager.start();
             this.pipe_manager.setPipeTexture("coral1");
@@ -113,9 +119,6 @@ export class MainScene extends Scene {
     // Resets the scene if lives > 0
     resetScene() {
 
-        //restores scroll speed 
-        this.setLevelParameters();
-
         this.player.setTexture("player");
         this.player.setScale(1);
         //this.player.setCircle(this.player.width/2)
@@ -126,11 +129,8 @@ export class MainScene extends Scene {
         this.player.body.enable = true;
         this.player.state = "can_move";
         this.pipe_manager.clearPipes();
-        this.pipe_manager.gap = this.pipeGap;
-        // this.pipe_manager.frequency = this.pipeFrequency;
-        // this.scrollSpeed = this.scrollSpeed ?? 2;
+        this.changeScrollSpeed(this.currScrollSpeed);
         this.pipe_manager.start();
-        this.scrollSpeed = 2;
         this.player.start();
         console.log("Resetting scene at Level", this.currentLevel, "with scrollSpeed:", this.scrollSpeed);
     }
@@ -213,7 +213,7 @@ export class MainScene extends Scene {
         // Destroy the score zone to prevent duplicate scoring
         scoreZone.destroy();
 
-        if(this.score == 5){
+        if(this.score == 2){
             this.levelUp();
             //this.lives = 3;
 
@@ -294,15 +294,26 @@ export class MainScene extends Scene {
         return (r << 16) | (g << 8) | b;
       }
       
-
-    currentTint = 0x888888;
     setLevelParameters() {
 
         this.changeScrollSpeed(this.scrollSpeed + 0.3);
+        this.currScrollSpeed = this.scrollSpeed;
 
         this.pipeGap -= 10;
         this.pipeFrequency -= 10;
         this.pipe_manager.changeDifficulty(this.pipeGap, this.pipeFrequency);
+
+        const random = Math.floor(Math.random() * 3) + 1;
+        if (random == 1) {
+            this.pipe_manager.setPipeTexture("coral1");
+        }
+        else if (random == 2) {
+            this.pipe_manager.setPipeTexture("coral2");
+        }
+        else {
+            this.pipe_manager.setPipeTexture("seaweed");
+
+        }
 
         this.background1.setTint(this.currentTint);
         this.background2.setTint(this.currentTint);
