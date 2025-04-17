@@ -96,6 +96,7 @@ export class MainScene extends Scene {
 
         this.player.setTexture("player");
         this.player.setScale(1);
+        this.player.setCircle(this.player.width/2)
         this.player.play("fish-swim");
         this.player.clearTint();
         this.player.setPosition(200, 100);
@@ -259,12 +260,12 @@ export class MainScene extends Scene {
 
         if(this.currentLevel === 1) {
             this.changeScrollSpeed(2);
-            this.pipe_manager.changeDifficulty(350, 100)
+            //this.pipe_manager.changeDifficulty(350, 100)
         } else if(this.currentLevel === 2){
             this.changeScrollSpeed(2.5);
-            this.pipe_manager.changeDifficulty(250, 50)
-            this.background1.setTint(0x555555);
-            this.background2.setTint(0x555555);
+            this.pipe_manager.changeDifficulty(350, 300)
+            this.background1.setTint(0x777777);
+            this.background2.setTint(0x777777);
             this.pipe_manager.setPipeTexture("coral2");
 
             // this.showText("Hello I am a fish");
