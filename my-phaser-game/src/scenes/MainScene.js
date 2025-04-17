@@ -17,8 +17,8 @@ export class MainScene extends Scene {
 
     // Scene Values
     scrollSpeed = 2;
-    pipeGap = 200;
-    pipeFrequency = 350;
+    pipeGap = 300;
+    pipeFrequency = 300;
 
     constructor() {
         super("MainScene");
@@ -92,14 +92,20 @@ export class MainScene extends Scene {
 
             this.scene.stop("MenuScene");
             this.scene.launch("HudScene", { lives: this.lives });
-            this.scrollSpeed = 2;
+            this.changeScrollSpeed(2);
             this.player.start();
             this.pipe_manager.start();
             this.pipe_manager.setPipeTexture("coral1");
+            this.pipe_manager.changeDifficulty(this.pipeGap, this.pipeFrequency);
             this.background1.clearTint();
             this.background2.clearTint();
         });
 
+    }
+
+    changeScrollSpeed(speed) {
+        this.pipe_manager.changeScrollSpeed(speed);
+        this.scrollSpeed = speed;
     }
 
     // Resets the scene if lives > 0
@@ -117,7 +123,6 @@ export class MainScene extends Scene {
         this.player.body.enable = true;
         this.player.state = "can_move";
         this.pipe_manager.clearPipes();
-
         this.pipe_manager.gap = this.pipeGap;
         // this.pipe_manager.frequency = this.pipeFrequency;
         // this.scrollSpeed = this.scrollSpeed ?? 2;
@@ -211,20 +216,82 @@ export class MainScene extends Scene {
         }
     }
 
+    showText(text) {
+        this.pipe_manager.stopSpawn();
+        this.time.delayedCall(3500, () => {
+            let currentText = "";
+            let showCursor = true;
+    
+            const textObject = this.add.text(100, this.scale.height - 100, "", {
+                font: "24px Arial",
+                fill: "#ffffff"
+            });
+
+            // Center the text initially
+            textObject.setOrigin(0.5, 0.5);  // Set origin to the center
+            textObject.x = this.cameras.main.width / 2;  // Center text horizontally
+
+            // Blinking cursor timer
+            this.time.addEvent({
+                delay: 500,
+                loop: true,
+                callback: () => {
+                    showCursor = !showCursor;
+                    textObject.setText(currentText + (showCursor ? "|" : ""));
+                    textObject.x = this.cameras.main.width / 2;
+                }
+            });
+    
+            let charIndex = 0;
+    
+            // Typing timer
+            this.time.addEvent({
+                delay: 100,
+                repeat: text.length - 1,
+                callback: () => {
+                    currentText += text[charIndex];
+                    charIndex++;
+                    textObject.setText(currentText);
+                    textObject.x = this.cameras.main.width / 2;
+                }
+            });
+
+            
+            this.time.addEvent({
+                delay: text.length * 100 + 2000, // After typing and 1 second pause
+                callback: () => {
+                    // Fade out the text
+                    this.tweens.add({
+                        targets: textObject,
+                        alpha: 0, // fade to transparent
+                        duration: 2000, // 1 second fade out
+                        ease: 'Linear',
+                        onComplete: () => {
+                            this.pipe_manager.start();
+                        }
+                    });
+                },
+            });
+
+        })
+
+    }
+
     setLevelParameters() {
 
         if(this.currentLevel === 1) {
-            this.scrollSpeed = 2;
-
+            this.changeScrollSpeed(2);
+            this.pipe_manager.changeDifficulty(350, 100)
         } else if(this.currentLevel === 2){
-            this.scrollSpeed = 2.5;
-
+            this.changeScrollSpeed(2.5);
+            this.pipe_manager.changeDifficulty(250, 50)
             this.background1.setTint(0x555555);
             this.background2.setTint(0x555555);
             this.pipe_manager.setPipeTexture("coral2");
-        } else if(this.currentLevel === 3){
-            this.scrollSpeed = 3;
 
+            // this.showText("Hello I am a fish");
+        } else if(this.currentLevel === 3){
+            this.changeScrollSpeed(3);
             // this.background.setTint(0x666666);
         } else if(this.currentLevel === 4){
             this.scrollSpeed = 3.5;
