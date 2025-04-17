@@ -1,1 +1,3 @@
 node_modules
+/my-phaser-game/dist
+/my-phaser-game/release
