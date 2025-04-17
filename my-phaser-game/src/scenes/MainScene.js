@@ -39,7 +39,10 @@ export class MainScene extends Scene {
 
     create() {
 
-        this.background1 = this.add.tileSprite(0, 0, 2695, this.scale.height, 'ocean-background')
+        this.scoreSound = this.sound.add("obstaclePassed");
+        const { width, height } = this.scale;
+
+        this.background1 = this.add.tileSprite(0, 0, this.scale.width, this.scale.height, 'ocean-background')
             .setOrigin(0, 0);
         
         this.background2 = this.add.tileSprite(2695, 0, 2695, this.scale.height, 'ocean-background')
@@ -70,6 +73,23 @@ export class MainScene extends Scene {
 
         // This event comes from MenuScene
         this.game.events.on("start-game", () => {
+
+            
+            this.bubblesSound = this.sound.add("bubbles");
+            this.bubblesSound.play({ volume: 1 });
+
+            this.time.delayedCall(500, () => {
+                this.tweens.add({
+                    targets: this.bubblesSound,
+                    volume: 0,
+                    duration: 1000,
+                    onComplete: () => {
+                        this.bubblesSound.stop();
+                    }
+                });
+            });
+            
+
             this.scene.stop("MenuScene");
             this.scene.launch("HudScene", { lives: this.lives });
             this.scrollSpeed = 2;
@@ -173,6 +193,8 @@ export class MainScene extends Scene {
     increaseScore(player, scoreZone) {
         this.score += 1; // Increment score
         console.log("Score:", this.score);
+
+        this.sound.play("obstaclePassed");
     
         // Destroy the score zone to prevent duplicate scoring
         scoreZone.destroy();
@@ -214,6 +236,7 @@ export class MainScene extends Scene {
     }
 
     levelUp(){
+        this.sound.play("levelUp");
 
         this.currentLevel++;
 
