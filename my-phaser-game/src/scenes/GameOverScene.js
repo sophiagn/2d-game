@@ -6,6 +6,7 @@ export class GameOverScene extends Scene {
     }
 
     init(data) {
+        this.finalScore = data.score ?? 0;
         this.cameras.main.fadeIn(1000, 0, 0, 0);
     }
 
@@ -47,23 +48,34 @@ export class GameOverScene extends Scene {
             24
         ).setOrigin(0.5, 0.5);
 
-        this.add.bitmapText(
+        const restart = this.add.bitmapText(
             this.scale.width / 2,
             this.scale.height / 2 + 130,
             "pixelfont",
             "CLICK TO RESTART",
             24
-        ).setOrigin(0.5, 0.5);
-
-        // Click to restart
-        this.time.addEvent({
-            delay: 1000,
-            callback: () => {
-                this.input.on("pointerdown", () => {
-                    this.scene.start("MainScene", { lives: 5 });
-                });
-            }
+          )
+          .setOrigin(0.5)
+          .setInteractive({ useHandCursor: true });
         
-        })
+          restart.on("pointerdown", () => {
+            this.scene.start("MainScene", { lives: 5 });
+          });
+        
+          // — Leaderboard button —  
+          const leaderboard = this.add.bitmapText(
+            this.scale.width / 2,
+            this.scale.height / 2 + 225,
+            "pixelfont",
+            "VIEW LEADERBOARD",
+            24
+          )
+          .setOrigin(0.5)
+          .setInteractive({ useHandCursor: true });
+        
+          leaderboard.on("pointerdown", () => {
+            this.scene.start("LeaderBoardScene", { score: this.finalScore });
+          });
+
     }
 }

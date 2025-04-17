@@ -6,7 +6,7 @@ import { MainScene } from "./scenes/MainScene";
 import { MenuScene } from "./scenes/MenuScene";
 import { SplashScene } from "./scenes/SplashScene";
 import { TitleScene } from "./scenes/TitleScene";
-
+import { LeaderBoardScene } from "./scenes/LeaderBoardScene";
 
 // More information about config: https://newdocs.phaser.io/docs/3.70.0/Phaser.Types.Core.GameConfig
 const config = {
@@ -40,6 +40,7 @@ const config = {
         MenuScene,
         HudScene,
         GameOverScene,
+        LeaderBoardScene,
     ]
 };
 

@@ -157,7 +157,7 @@ export class MainScene extends Scene {
                 } else {
                     //Game is over
                     this.scene.stop("HudScene");
-                    this.scene.start("GameOverScene");
+                    this.scene.start("GameOverScene", { score: this.totalScore });
                 }
             });
         }
