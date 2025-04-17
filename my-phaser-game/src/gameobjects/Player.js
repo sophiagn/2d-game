@@ -68,6 +68,13 @@ export class Player extends Physics.Arcade.Sprite {
             // If the space key is pressed, apply upward velocity
             if (Phaser.Input.Keyboard.JustDown(this.spaceKey)) {
                 this.setVelocityY(-200); 
+                this.setAngle(-20);
+            }
+
+            if (this.body.velocity.y > 0) {
+                this.setAngle(Math.min(this.angle + 1, 20)); 
+            } else if (this.body.velocity.y < 0) {
+                this.setAngle(-20); 
             }
 
         }

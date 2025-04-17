@@ -11,7 +11,7 @@ export class SplashScene extends Scene {
     }
 
     create() {
-        const logo = this.add.image(this.scale.width / 2, this.scale.height / 2, "logo");
+        const logo = this.add.image(this.scale.width / 2, this.scale.height / 2, "titleLogo");
         const fx = logo.postFX.addShine(1, .2, 5);
         
         this.time.addEvent({
@@ -20,7 +20,7 @@ export class SplashScene extends Scene {
                 const main_camera = this.cameras.main.fadeOut(1000, 0, 0, 0);
                 // Fadeout complete
                 main_camera.once("camerafadeoutcomplete", () => {
-                    this.scene.start("MainScene");
+                    this.scene.start("TitleScene");
                 });
             }
         });

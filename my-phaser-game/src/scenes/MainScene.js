@@ -39,6 +39,9 @@ export class MainScene extends Scene {
 
     create() {
 
+        this.scoreSound = this.sound.add("obstaclePassed");
+        const { width, height } = this.scale;
+
         this.background1 = this.add.tileSprite(0, 0, this.scale.width, this.scale.height, 'ocean-background')
             .setOrigin(0, 0);
         
@@ -70,6 +73,23 @@ export class MainScene extends Scene {
 
         // This event comes from MenuScene
         this.game.events.on("start-game", () => {
+
+            
+            this.bubblesSound = this.sound.add("bubbles");
+            this.bubblesSound.play({ volume: 1 });
+
+            this.time.delayedCall(500, () => {
+                this.tweens.add({
+                    targets: this.bubblesSound,
+                    volume: 0,
+                    duration: 1000,
+                    onComplete: () => {
+                        this.bubblesSound.stop();
+                    }
+                });
+            });
+            
+
             this.scene.stop("MenuScene");
             this.scene.launch("HudScene", { lives: this.lives });
             this.scrollSpeed = 2;
