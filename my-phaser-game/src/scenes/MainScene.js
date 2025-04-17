@@ -213,7 +213,7 @@ export class MainScene extends Scene {
         // Destroy the score zone to prevent duplicate scoring
         scoreZone.destroy();
 
-        if(this.score == 2){
+        if(this.score == 4){
             this.levelUp();
             //this.lives = 3;
 
