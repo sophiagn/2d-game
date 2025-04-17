@@ -1,8 +1,8 @@
-# Phaser's Revenge
+# Floppy Fish
 
-Phaser's Revenge is an adaptation of the classic game Space Invaders.
+Floppy Fish is an adaptation of the game Flappy Bird.
 
-Your mission is to shoot the enemy ship and dodge its attacks to score as many points as possible in a short amount of time.
+Your mission is to swim through the ocean and avoid obstacles as best as you can!
 
 ## Instructions
 
