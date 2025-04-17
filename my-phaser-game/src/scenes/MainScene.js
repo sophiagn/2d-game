@@ -193,6 +193,8 @@ export class MainScene extends Scene {
     increaseScore(player, scoreZone) {
         this.score += 1; // Increment score
         console.log("Score:", this.score);
+
+        this.sound.play("obstaclePassed");
     
         // Destroy the score zone to prevent duplicate scoring
         scoreZone.destroy();
@@ -234,6 +236,7 @@ export class MainScene extends Scene {
     }
 
     levelUp(){
+        this.sound.play("levelUp");
 
         this.currentLevel++;
 
