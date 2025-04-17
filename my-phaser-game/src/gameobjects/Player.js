@@ -16,7 +16,7 @@ export class Player extends Physics.Arcade.Sprite {
         this.scene.add.existing(this);
         this.scene.physics.add.existing(this);
 
-        this.setCircle(this.width/2)
+        //this.setCircle(this.width/2);
 
         if (this.scene.anims.exists("fish-swim")) {
             this.play("fish-swim");
@@ -96,6 +96,7 @@ export class Player extends Physics.Arcade.Sprite {
         this.anims.stop();
         this.setTexture("playerDead"); 
         this.setScale(1.3);
+        //this.setCircle(this.width/2);
 
         // Delay the scene transition to allow any effects to play, call handlePlayerDeath
         this.scene.time.delayedCall(1000, () => {

@@ -4,8 +4,9 @@ import { Scene } from "phaser";
 export class HudScene extends Scene {
 
     lives_text;
-    lives_image;
 
+    score_text;
+    lives_image;
 
     constructor() {
         super("HudScene");
@@ -17,8 +18,10 @@ export class HudScene extends Scene {
     }
 
     create() {
+        this.score_text = this.add.bitmapText(this.scale.width - 10, 10, "pixelfont", `SCORE:${0}`, 24);
+        this.score_text.setOrigin(1, 0);
+      
         this.lives_text = this.add.bitmapText(10, 10, "pixelfont", `LIVES:${this.lives}`, 24);
-
         this.lives_image = this.add.image(
             this.lives_text.x + this.lives_text.width / 2 + 5,
             this.lives_text.y + this.lives_text.height + 10,
@@ -62,6 +65,10 @@ export class HudScene extends Scene {
         }
 
         console.log("HUD updated lives to:", newLives);
+    }
+
+    updateScore(score) {
+        this.score_text.setText(`SCORE:${score}`);
     }
 
 }

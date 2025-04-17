@@ -8,6 +8,7 @@ export class MainScene extends Scene {
     pipe_manager = null;
 
     score = 0;
+    totalScore = 0;
 
     background1 = null;
     background2 = null;
@@ -92,6 +93,7 @@ export class MainScene extends Scene {
 
             this.scene.stop("MenuScene");
             this.scene.launch("HudScene", { lives: this.lives });
+            this.totalScore = 0;
             this.changeScrollSpeed(2);
             this.player.start();
             this.pipe_manager.start();
@@ -116,6 +118,7 @@ export class MainScene extends Scene {
 
         this.player.setTexture("player");
         this.player.setScale(1);
+        //this.player.setCircle(this.player.width/2)
         this.player.play("fish-swim");
         this.player.clearTint();
         this.player.setPosition(200, 100);
@@ -197,6 +200,12 @@ export class MainScene extends Scene {
 
     increaseScore(player, scoreZone) {
         this.score += 1; // Increment score
+        this.totalScore += 1;
+
+        const hud = this.scene.get("HudScene");
+        if (hud) {
+            hud.updateScore(this.totalScore);
+        }
         console.log("Score:", this.score);
 
         this.sound.play("obstaclePassed");
@@ -204,9 +213,9 @@ export class MainScene extends Scene {
         // Destroy the score zone to prevent duplicate scoring
         scoreZone.destroy();
 
-        if(this.score == 2){
+        if(this.score == 5){
             this.levelUp();
-            this.lives = 3;
+            //this.lives = 3;
 
             //update life counter
             const hud = this.scene.get("Hudscene");
@@ -277,29 +286,51 @@ export class MainScene extends Scene {
 
     }
 
+    darkenHexColor(hexValue, factor) {
+        const r = Math.floor(((hexValue >> 16) & 0xff) * factor);
+        const g = Math.floor(((hexValue >> 8) & 0xff) * factor);
+        const b = Math.floor((hexValue & 0xff) * factor);
+      
+        return (r << 16) | (g << 8) | b;
+      }
+      
+
+    currentTint = 0x888888;
     setLevelParameters() {
 
-        if(this.currentLevel === 1) {
-            this.changeScrollSpeed(2);
-            this.pipe_manager.changeDifficulty(350, 100)
-        } else if(this.currentLevel === 2){
-            this.changeScrollSpeed(2.5);
-            this.pipe_manager.changeDifficulty(250, 50)
-            this.background1.setTint(0x555555);
-            this.background2.setTint(0x555555);
-            this.pipe_manager.setPipeTexture("coral2");
+        this.changeScrollSpeed(this.scrollSpeed + 0.3);
 
-            // this.showText("Hello I am a fish");
-        } else if(this.currentLevel === 3){
-            this.changeScrollSpeed(3);
-            // this.background.setTint(0x666666);
-        } else if(this.currentLevel === 4){
-            this.scrollSpeed = 3.5;
-        } else if(this.currentLevel === 5){
-            this.scrollSpeed = 4;
-        } else if(this.currentLevel === 6){
-            this.scrollSpeed = 4.5;
-        }
+        this.pipeGap -= 10;
+        this.pipeFrequency -= 10;
+        this.pipe_manager.changeDifficulty(this.pipeGap, this.pipeFrequency);
+
+        this.background1.setTint(this.currentTint);
+        this.background2.setTint(this.currentTint);
+
+        this.currentTint = this.darkenHexColor(this.currentTint, 0.9);
+
+
+        // if(this.currentLevel === 1) {
+        //     this.changeScrollSpeed(2);
+        //     //this.pipe_manager.changeDifficulty(350, 100)
+        // } else if(this.currentLevel === 2){
+        //     this.changeScrollSpeed(2.5);
+        //     this.pipe_manager.changeDifficulty(350, 300)
+        //     this.background1.setTint(0x777777);
+        //     this.background2.setTint(0x777777);
+        //     this.pipe_manager.setPipeTexture("coral2");
+
+        //     // this.showText("Hello I am a fish");
+        // } else if(this.currentLevel === 3){
+        //     this.changeScrollSpeed(3);
+        //     // this.background.setTint(0x666666);
+        // } else if(this.currentLevel === 4){
+        //     this.scrollSpeed = 3.5;
+        // } else if(this.currentLevel === 5){
+        //     this.scrollSpeed = 4;
+        // } else if(this.currentLevel === 6){
+        //     this.scrollSpeed = 4.5;
+        // }
     }
 
     levelUp(){
@@ -309,7 +340,7 @@ export class MainScene extends Scene {
 
         // call to change parameters based on level
         this.setLevelParameters();
-        this.lives = 3; 
+        //this.lives = 3; 
 
         // reset score 
         this.score = 0;
