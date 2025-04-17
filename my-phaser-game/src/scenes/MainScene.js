@@ -237,6 +237,7 @@ export class MainScene extends Scene {
 
     levelUp(){
         this.sound.play("levelUp");
+        console.log("this played");
 
         this.currentLevel++;
 
