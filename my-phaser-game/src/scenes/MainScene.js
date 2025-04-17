@@ -27,6 +27,7 @@ export class MainScene extends Scene {
     create() {
 
         this.scoreSound = this.sound.add("obstaclePassed");
+        const { width, height } = this.scale;
 
         this.background1 = this.add.tileSprite(0, 0, this.scale.width, this.scale.height, 'ocean-background')
             .setOrigin(0, 0);
