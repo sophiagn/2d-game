@@ -11,7 +11,7 @@ export class GameOverScene extends Scene {
 
     create() {
         // Backgrounds
-        this.add.image(0, 0, "background")
+        this.add.image(0, 0, "backgroundPlain")
             .setOrigin(0, 0);
         this.add.image(0, this.scale.height, "floor")
             .setOrigin(0, 1);
@@ -33,16 +33,11 @@ export class GameOverScene extends Scene {
             0x000000
         ).setAlpha(.8).setOrigin(0, 0.5);
 
-        const gameover_text = this.add.bitmapText(
+        const gameOverImage = this.add.image(
             this.scale.width / 2,
             this.scale.height / 2,
-            "knighthawks",
-            "GAME\nOVER",
-            62,
-            1
-        )
-        gameover_text.setOrigin(0.5, 0.5);
-        gameover_text.postFX.addShine();
+            "gameOver"
+        ).setOrigin(0.5).setScale(0.95);
 
         this.add.bitmapText(
             this.scale.width / 2,

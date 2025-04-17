@@ -11,12 +11,24 @@ export class Preloader extends Phaser.Scene {
         this.load.image("logo", "logo.png");
         this.load.image("floor");
         this.load.image("background", "background.png");
+        this.load.image("background1", "background.png");
+        this.load.image("background2", "background2.png");
+        this.load.image("backgroundPlain", "backgroundPlain.png");
+
+        this.load.image("titleLogo", "FFgamename.png");
+        this.load.image("gameOver", "gameoverimage.png");
+
+        this.load.image("0hearts", "/lives/0hearts.png");
+        this.load.image("1hearts", "/lives/1hearts.png");
+        this.load.image("2hearts", "/lives/2hearts.png");
+        this.load.image("3hearts", "/lives/3hearts.png");
+        this.load.image("4hearts", "/lives/4hearts.png");
+        this.load.image("5hearts", "/lives/5hearts.png");
 
         this.load.image("ocean-background", "ocean-background.png");
         this.load.image("pipe", "coral1.png"); 
         this.load.image("seaweed1", "obstacles/seaweed1.png"); // for seaweed animation
         this.load.image("seaweed2", "obstacles/seaweed2.png"); // for seaweed animation
-
 
         this.load.image("player", "player/fish1.png");
         this.load.image("player2", "player/fish2.png");
@@ -24,6 +36,11 @@ export class Preloader extends Phaser.Scene {
         // this.load.atlas("propulsion-fire", "player/propulsion/propulsion-fire.png", "player/propulsion/propulsion-fire_atlas.json");
         // this.load.animation("propulsion-fire-anim", "player/propulsion/propulsion-fire_anim.json");
 
+        //audios
+        this.load.audio("bubbles", "/audio/bubbles-003-6397.mp3");
+        this.load.audio("levelUp", "/audio/levelPassed.mp3");
+        this.load.audio("obstaclePassed", "/audio/success.mp3");
+        this.load.audio("drop", "/audio/drop.mp3");
 
         // Fonts
         this.load.bitmapFont("pixelfont", "fonts/pixelfont.png", "fonts/pixelfont.xml");

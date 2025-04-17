@@ -25,8 +25,8 @@ export class MainScene extends Scene {
     }
 
     create() {
-        
-        const { width, height } = this.scale;
+
+        this.scoreSound = this.sound.add("obstaclePassed");
 
         this.background1 = this.add.tileSprite(0, 0, this.scale.width, this.scale.height, 'ocean-background')
             .setOrigin(0, 0);
@@ -63,6 +63,23 @@ export class MainScene extends Scene {
 
         // This event comes from MenuScene
         this.game.events.on("start-game", () => {
+
+            
+            this.bubblesSound = this.sound.add("bubbles");
+            this.bubblesSound.play({ volume: 1 });
+
+            this.time.delayedCall(500, () => {
+                this.tweens.add({
+                    targets: this.bubblesSound,
+                    volume: 0,
+                    duration: 1000,
+                    onComplete: () => {
+                        this.bubblesSound.stop();
+                    }
+                });
+            });
+            
+
             this.scene.stop("MenuScene");
             this.scene.launch("HudScene", { lives: this.lives });
             this.player.start();
@@ -144,12 +161,93 @@ export class MainScene extends Scene {
             // Reset it to the right of the first background
             this.background2.x = this.background1.x + this.scale.width;
         }
+
+        // When the first background is completely off screen
+        if (this.floor1.x <= -this.floor1.width) {
+            // Reset it to the right of the second background
+            this.floor1.x = this.floor2.x + this.floor1.width;
+        }
+
+        // When the second background is completely off screen
+        if (this.floor2.x <= -this.floor1.width) {
+            // Reset it to the right of the first background
+            this.floor2.x = this.floor1.x + this.floor1.width;
+        }
     }  
 
-    update() {
-        this.background_scroll();
-        this.pipe_manager.spawn_pipes();
+    increaseScore(player, scoreZone) {
+        this.score += 1; // Increment score
+        console.log("Score:", this.score);
+    
+        // Destroy the score zone to prevent duplicate scoring
+        scoreZone.destroy();
 
+        if(this.score == 2){
+            this.levelUp();
+            this.lives = 3;
+
+            //update life counter
+            const hud = this.scene.get("Hudscene");
+            if(hud && hud.update_lives) {
+                hud.update_lives(this.lives);
+            }
+        }
+    }
+
+    setLevelParameters() {
+
+        if(this.currentLevel === 1) {
+            this.scrollSpeed = 2;
+
+        } else if(this.currentLevel === 2){
+            this.scrollSpeed = 2.5;
+
+            this.background1.setTint(0x555555);
+            this.background2.setTint(0x555555);
+            this.pipe_manager.setPipeTexture("coral2");
+        } else if(this.currentLevel === 3){
+            this.scrollSpeed = 3;
+
+            // this.background.setTint(0x666666);
+        } else if(this.currentLevel === 4){
+            this.scrollSpeed = 3.5;
+        } else if(this.currentLevel === 5){
+            this.scrollSpeed = 4;
+        } else if(this.currentLevel === 6){
+            this.scrollSpeed = 4.5;
+        }
+    }
+
+    levelUp(){
+
+        this.currentLevel++;
+
+        // call to change parameters based on level
+        this.setLevelParameters();
+        this.lives = 3; 
+
+        // reset score 
+        this.score = 0;
+
+        // update life counter
+        this.time.delayedCall(100, () => {
+            const hud = this.scene.get("HudScene");
+            if (hud && hud.update_lives) {
+                hud.update_lives(this.lives);
+            }
+        });
+
+        // message of levelUp
+        this.cameras.main.flash(500, 0, 255, 0);
+        console.log("Level Up! You are in level", this.currentLevel);
+
+        
+    }
+
+
+    update(time, delta) {
+        this.background_scroll(delta);
+        this.pipe_manager.update();
         this.player.update();
 
     }
